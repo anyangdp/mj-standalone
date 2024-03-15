@@ -3,6 +3,7 @@ package com.mj.web.aop;
 import com.alibaba.fastjson.JSON;
 import com.mj.framework.handler.AbstractDTO;
 import com.mj.security.SecurityUserDetails;
+import com.mj.security.util.SecurityUtil;
 import com.mj.web.system.domain.dobj.STenantResourceDO;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -33,7 +34,7 @@ public class TenantAspect {
      */
     @Before("@annotation(com.mj.framework.annotation.TenantResource)")
     public void tenantResource(JoinPoint joinPoint) throws NoSuchFieldException, IllegalAccessException {
-        SecurityUserDetails securityUserDetails = JSON.parseObject(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString(), SecurityUserDetails.class);
+        SecurityUserDetails securityUserDetails = SecurityUtil.securityUserDetails();
         if (null == securityUserDetails) {
             return;
         }

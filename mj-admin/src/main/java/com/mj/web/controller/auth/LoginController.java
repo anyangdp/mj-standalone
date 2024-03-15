@@ -7,6 +7,7 @@ import com.mj.framework.handler.ControllerTemplate;
 import com.mj.framework.handler.GenericResponse;
 import com.mj.security.AdminTokenProperties;
 import com.mj.security.SecurityUserDetails;
+import com.mj.security.util.SecurityUtil;
 import com.mj.web.domain.LoginDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -88,8 +89,7 @@ public class LoginController {
     @GetMapping("/currentUser")
     public GenericResponse<SecurityUserDetails> userInfo() throws Exception {
         return ControllerTemplate.call(response -> {
-            SecurityUserDetails user = JSON.parseObject(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString(), SecurityUserDetails.class);
-            response.setData(user);
+            response.setData(SecurityUtil.securityUserDetails());
             response.setResult(true);
         });
     }

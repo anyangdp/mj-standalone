@@ -1,5 +1,6 @@
 package com.mj.security;
 
+import com.mj.security.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authorization.AuthorizationDecision;
@@ -45,13 +46,13 @@ public class RequestAuthorizationManager implements AuthorizationManager<Request
 
     private boolean isAuthorized(Authentication authentication, HttpServletRequest request) {
         // 自定义的权限控制，request 可以获取到当前的请求信息。
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        Collection<? extends GrantedAuthority> authorities = SecurityUtil.authorities();
 
         // authentication 就是我们的认证对象，我们可以直接拿到认证用户的权限
 
         //TODO 查询缓存中用户的权限
         // anonymousUser 匿名用户 ROLE_ANONYMOUS 默认权限
-        String principal = (String) authentication.getPrincipal();
+        String principal = authentication.getPrincipal().toString();
         if (principal.equals("anonymousUser")) {
             return false;
         }

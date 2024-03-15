@@ -10,6 +10,7 @@ import com.mj.framework.handler.ErrorDTO;
 import com.mj.framework.handler.GenericResponse;
 import com.mj.framework.util.ValueUtil;
 import com.mj.security.SecurityUserDetails;
+import com.mj.security.util.SecurityUtil;
 import com.mj.web.system.domain.dobj.UserDO;
 import com.mj.web.system.domain.dobj.UserMenuPermissionDO;
 import com.mj.web.system.domain.dto.UserDTO;
@@ -62,7 +63,7 @@ public class UserController extends AbstractCRUDHandler<Long, UserDTO, UserServi
     @PutMapping("/reset/password")
     public GenericResponse<Void> resetPassword(@RequestBody @Valid ResetPasswordDTO request, BindingResult bindingResult) throws Exception {
         return ControllerTemplate.call(bindingResult, response -> {
-            SecurityUserDetails user = JSON.parseObject(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString(), SecurityUserDetails.class);
+            SecurityUserDetails user = SecurityUtil.securityUserDetails();
             if (!user.getUsername().equals("admin")) {
                 response.setError(new ErrorDTO(ErrorCodeEnum.BIZ_OPERATE_ERROR.getCode(), "禁止操作"));
                 return;
@@ -75,7 +76,7 @@ public class UserController extends AbstractCRUDHandler<Long, UserDTO, UserServi
     @PutMapping("/change/password")
     public GenericResponse<Void> changePassword(@RequestBody @Valid ChangePasswordDTO request, BindingResult bindingResult) throws Exception {
         return ControllerTemplate.call(bindingResult, response -> {
-            SecurityUserDetails user = JSON.parseObject(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString(), SecurityUserDetails.class);
+            SecurityUserDetails user = SecurityUtil.securityUserDetails();
             if (bCryptPasswordEncoder.matches(request.getOldPassword(), user.getPassword())) {
                 response.setResult(getService().updateById((UserDO) new UserDO()
                         .setPassword(bCryptPasswordEncoder.encode(request.getNewPassword()))

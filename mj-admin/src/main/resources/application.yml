@@ -26,8 +26,6 @@ spring:
   web:
     resources:
       static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
-  elasticsearch:
-    uris: http://192.168.10.232:9200
   main:
     allow-bean-definition-overriding: true
 messaging:    #使用mqtt订阅平台设备消息
@@ -37,7 +35,7 @@ messaging:    #使用mqtt订阅平台设备消息
     host: 0.0.0.0
     max-message-size: 204800
 web:
-  upload-path: /Users/say/Documents/gitee/uni-link-iot/protocol/
+  upload-path: /Users/say/Documents/github/mj-standalone
 #  upload-path: /tmp/file/
 admin:
   token:
