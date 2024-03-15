@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mj.web.mapper.STenantUserMapper">
+
+    <select id="selectPageByCondition" resultType="com.mj.web.domain.dobj.ext.STenantUserExtDO">
+        select st.id, st.name, stu.user_id, u.nickname
+        from s_tenant_user stu
+        left join iot.user u on u.id = stu.user_id
+        left join s_tenant st on st.id = stu.tenant_id
+        <where>
+            <if test="request.nickname != null and request.nickname != ''">
+                and u.nickname like concat(#{request.nickname}, '%')
+            </if>
+            <if test="request.id != null and request.id != ''">
+                and st.id = #{request.id}
+            </if>
+        </where>
+
+    </select>
+</mapper>

@@ -1,0 +1,35 @@
+package ${package}.domain.dto;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.mj.common.framework.handler.AbstractDTO;
+import lombok.Data;
+import lombok.experimental.Accessors;
+import java.time.LocalDateTime;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+/**
+ * ${tableComment}
+ */
+@ApiModel(value = "${tableComment}")
+@Accessors(chain = true)
+@Data
+public class ${className}DTO extends AbstractDTO<String> {
+
+    <% for(f in fields){
+        if("id" == f.field
+            		 || "createdBy"==f.field || "createdAt"==f.field
+            		 || "updatedBy"==f.field || "updatedAt"==f.field
+            		 || "deletedBy"==f.field || "deletedAt"==f.field || "deletedMsg"==f.field
+            		 || "deleted"==f.field || "enabled"==f.field
+            		 || "active"==f.field || "deleted"==f.field) continue; %>
+    @ApiModelProperty(value = "${f.comment}")
+        <% if(f.type == "Date") { %>
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime ${f.field};
+        <% } else { %>
+    private ${f.type} ${f.field};
+        <% } %>
+    <% } %>
+
+}

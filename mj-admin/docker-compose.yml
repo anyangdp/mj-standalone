@@ -1,0 +1,19 @@
+version: '3'
+services:
+  mj-admin:
+    image: registry.cn-shanghai.aliyuncs.com/aiw/mj-admin:latest
+    container_name: mj-admin
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - /tmp:/tmp/logs
+      - /tmp:/tmp/file/
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100k"
+        max-file: "1"
+    ports:
+      - 9201:9201
+    restart: always
+    entrypoint: nohup java -jar /app.jar --spring.profiles.active=staging > /dev/null 2>&1 &
