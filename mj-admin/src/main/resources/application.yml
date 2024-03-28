@@ -90,7 +90,7 @@ mybatis-plus:
   typeAliasesPackage: com.mj.web.domain.dobj
 logger:
   path: /tmp/logs/${spring.application.name}
-  file: com.mj.iot
+  file: com.mj.web
   pattern: ===%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n
   charset: utf-8
   maxFile: 100MB

@@ -2,15 +2,15 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mj.web.mapper.STenantResourceMapper">
+<mapper namespace="com.mj.web.system.mapper.STenantResourceMapper">
 
-    <select id="selectPageByCondition" resultType="com.mj.web.domain.dobj.ext.STenantResourceExtDO">
+    <select id="selectPageByCondition" resultType="com.mj.web.system.domain.dobj.ext.STenantResourceExtDO">
         select st.id, st.name, str.type, str.resource_id
         from s_tenant_resource str
         left join s_tenant st on st.id = str.tenant_id
     </select>
 
-    <select id="selectListByUserId" resultType="com.mj.web.domain.dobj.STenantResourceDO">
+    <select id="selectListByUserId" resultType="com.mj.web.system.domain.dobj.STenantResourceDO">
         select str.*
         from s_tenant_resource str
         left join s_tenant st on str.tenant_id = st.id and str.type = 'device'

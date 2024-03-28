@@ -4,10 +4,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mj.web.mapper.STenantUserMapper">
 
-    <select id="selectPageByCondition" resultType="com.mj.web.domain.dobj.ext.STenantUserExtDO">
+    <select id="selectPageByCondition" resultType="com.mj.web.system.domain.dobj.ext.STenantUserExtDO">
         select st.id, st.name, stu.user_id, u.nickname
         from s_tenant_user stu
-        left join iot.user u on u.id = stu.user_id
+        left join user u on u.id = stu.user_id
         left join s_tenant st on st.id = stu.tenant_id
         <where>
             <if test="request.nickname != null and request.nickname != ''">

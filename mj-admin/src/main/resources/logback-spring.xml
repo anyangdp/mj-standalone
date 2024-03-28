@@ -43,7 +43,7 @@
     <logger name="com.alibaba.druid" level="ERROR"/>
     <logger name="org.springframework.security" level="DEBUG"/>
     <logger name="org.springframework.security.web" level="DEBUG"/>
-    <logger name="com.mj.iot" level="INFO"/>
+    <logger name="com.mj.web" level="INFO"/>
 
     <!-- 环境，将此级别配置为适合的级别，以免日志文件太多或影响程序性能 -->
     <springProfile name="dev">

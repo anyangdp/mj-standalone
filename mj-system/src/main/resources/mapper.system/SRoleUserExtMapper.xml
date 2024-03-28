@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mj.web.mapper.SRoleUserMapper">
+<mapper namespace="com.mj.web.system.mapper.SRoleUserMapper">
 
-    <select id="userRolePage" resultType="com.mj.web.domain.dobj.ext.UserRoleExtDO">
+    <select id="userRolePage" resultType="com.mj.web.system.domain.dobj.ext.UserRoleExtDO">
         select r.id, r.name, r.description, r.sort,
                if(sru.user_id is null, 0, 1) as flag
         from s_role r
@@ -12,7 +12,7 @@
             and sru.user_id = #{request.userId}
         order by r.sort desc
     </select>
-    <select id="roleUser" resultType="com.mj.web.domain.dobj.ext.RoleUserExtDO">
+    <select id="roleUser" resultType="com.mj.web.system.domain.dobj.ext.RoleUserExtDO">
         select u.id as userId
         from user u
                  left join s_role_user sru on sru.user_id = u.id
