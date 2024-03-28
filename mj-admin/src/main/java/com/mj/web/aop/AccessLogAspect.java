@@ -24,7 +24,7 @@ import java.time.Instant;
 @Component
 @EnableAspectJAutoProxy
 public class AccessLogAspect {
-    @Around("execution(* com.mj.iot.controller.*.*(..))")
+    @Around("execution(* com.mj.web.controller.*.*(..))")
     public Object controller(ProceedingJoinPoint joinPoint) throws Throwable {
         Instant startTime = Instant.now();
         Object result = joinPoint.proceed();

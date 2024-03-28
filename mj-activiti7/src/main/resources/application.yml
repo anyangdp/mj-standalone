@@ -1,10 +1,8 @@
 server:
-  port: 9201
-  servlet:
-    context-path: /
+  port: 9203
 spring:
   application:
-    name: mj-admin
+    name: mj-activiti
   profiles:
     active: dev
   datasource:
@@ -17,7 +15,8 @@ spring:
     connectionProperties: druid.stat.logSlowSql=true;druid.stat.mergeSql=true;druid.stat.slowSqlMillis=3000;
   redis:
     host: localhost
-    # 数据库索引 默认0
+    # 数据库索引 默认0  mapperLocations: classpath:mapper/**/*Mapper.xml
+    #  typeAliasesPackage: com.mj.**.domain.dobj
     database: 0
     port: 16379
     # 超时时间 Duration类型 10秒
@@ -30,8 +29,8 @@ spring:
   web:
     resources:
       static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
-#  main:
-#    allow-bean-definition-overriding: true
+  main:
+    allow-bean-definition-overriding: true
   activiti:
     database-schema-update: true
     db-history-used: true
@@ -39,6 +38,7 @@ spring:
     check-process-definitions: false
     deployment-mode: never-fail
     process-definition-location-prefix: classpath:/process/
+    async-executor-activate: false
 web:
   upload-path: /Users/say/Documents/github/mj-standalone
 #  upload-path: /tmp/file/

@@ -43,6 +43,7 @@
         <module>mj-tool</module>
         <module>mj-system</module>
         <module>mj-security</module>
+        <module>mj-activiti7</module>
     </modules>
     <dependencyManagement>
         <dependencies>

@@ -13,7 +13,7 @@ import java.util.Collection;
  */
 public class SecurityUtil {
     public static SecurityUserDetails securityUserDetails() {
-        return JSON.parseObject(JSON.toJSONString(SecurityContextHolder.getContext().getAuthentication().getPrincipal()), SecurityUserDetails.class);
+        return JSON.parseObject(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString(), SecurityUserDetails.class);
     }
 
     public static String name() {
