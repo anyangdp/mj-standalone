@@ -10,10 +10,12 @@ import com.mj.security.AdminTokenProperties;
 import com.mj.security.CustomGrantedAuthority;
 import com.mj.security.SecurityConstant;
 import com.mj.security.SecurityUserDetails;
+import com.mj.security.exception.JwtAuthenticationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -34,9 +36,9 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private StringRedisTemplate redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
-    private AdminTokenProperties adminTokenProperties;
+    private final AdminTokenProperties adminTokenProperties;
 
     public JwtAuthenticationFilter(StringRedisTemplate redisTemplate, AdminTokenProperties adminTokenProperties) {
         this.redisTemplate = redisTemplate;
@@ -47,20 +49,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         log.info("执行jwt filter");
         String header = request.getHeader(SecurityConstant.HEADER);
-        Boolean notValid = StringUtils.isBlank(header) || header.equals("null") || !header.startsWith(SecurityConstant.TOKEN_SPLIT);
-        if (notValid) {
-            doFilter(request, response, chain);
-            return;
-        }
-        String finalHeader = header.substring(SecurityConstant.TOKEN_SPLIT.length());
-        try {
-            UsernamePasswordAuthenticationToken authentication = getAuthentication(RedisKeyConstant.TOKEN_PREFIX + finalHeader, response);
-            if (null == authentication) {
-                return;
+        if (StringUtils.isNotBlank(header) && header.startsWith(SecurityConstant.TOKEN_SPLIT)) {
+            String finalHeader = header.substring(SecurityConstant.TOKEN_SPLIT.length());
+            try {
+                UsernamePasswordAuthenticationToken authentication = getAuthentication(RedisKeyConstant.TOKEN_PREFIX + finalHeader, response);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                throw new JwtAuthenticationException(e.getMessage());
             }
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        } catch (Exception e) {
-            log.error(e.getMessage());
         }
 
         doFilter(request, response, chain);
@@ -75,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // redis
         String v = redisTemplate.opsForValue().get(header);
         if (StringUtils.isBlank(v)) {
-            ResponseUtil.out(response, new GenericResponse(false,
+            ResponseUtil.out(response, new GenericResponse<Void>(false,
                     new ErrorDTO(ErrorCodeEnum.LOGIN_TOKEN_INVALID.getCode(), ErrorCodeEnum.LOGIN_TOKEN_INVALID.getMessage()), null));
             return null;
         }

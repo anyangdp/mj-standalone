@@ -4,6 +4,7 @@ import com.mj.framework.constants.ErrorCodeEnum;
 import com.mj.framework.handler.ErrorDTO;
 import com.mj.framework.handler.GenericResponse;
 import com.mj.framework.util.ResponseUtil;
+import com.mj.security.exception.JwtAuthenticationException;
 import com.mj.security.exception.UserPasswordErrorException;
 import com.mj.security.filter.CustomFilterSecurityInterceptor;
 import com.mj.security.filter.JwtAuthenticationFilter;
@@ -18,12 +19,17 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @Author anyang
@@ -33,9 +39,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
-    // @Lazy
-    // @Autowired
-    // public UserDetailsService userDetailServiceImpl;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
@@ -50,6 +53,7 @@ public class WebSecurityConfig {
 
     @Autowired
     private CustomFilterSecurityInterceptor customFilterSecurityInterceptor;
+
 
     @Bean
     public UserDetailsService userDetailsService() {
@@ -72,47 +76,52 @@ public class WebSecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
-        http.formLogin().disable().csrf().disable()
-                .sessionManagement().disable()
-                // .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                //  .and()
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.formLogin().disable()
+                .csrf().disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeHttpRequests()
-                .antMatchers("/doc.html",
-                        "/v2/api-docs/**",
-                        "/v3/api-docs/**",
-                        "/swagger-resources/**",
-                        "/**/*.js",
-                        "/**/*.css",
-                        "/**/*.png",
-                        "/**/*.ico",
-                        "/file/**",
-                        "/bullet/**").permitAll()
-                .antMatchers("/doLogout").authenticated()
-                .antMatchers("/doLogin").permitAll()
-                .antMatchers("/do/third/auth").permitAll()
+                .antMatchers("/bullet/**").permitAll()
+                        .antMatchers("/doLogout").authenticated()
+                .antMatchers("/doLogin", "/do/third/auth").permitAll()
                 .anyRequest().access(requestAuthorizationManager)
                 .and()
-                .exceptionHandling(exception -> {
-                    exception.authenticationEntryPoint((httpServletRequest, response, e) -> {
-                        if (e instanceof UserPasswordErrorException) {
-                            ResponseUtil.out(response, new GenericResponse(false, new ErrorDTO(ErrorCodeEnum.LOGIN_ERROR.getCode(), ErrorCodeEnum.LOGIN_ERROR.getMessage()), null));
-                        } else if (e instanceof BadCredentialsException) {
-                            ResponseUtil.out(response, new GenericResponse(false, new ErrorDTO(ErrorCodeEnum.LOGIN_ERROR.getCode(), ErrorCodeEnum.LOGIN_ERROR.getMessage()), null));
-                        } else {
-                            ResponseUtil.out(response, new GenericResponse(false, new ErrorDTO(ErrorCodeEnum.PERMISSION_NOT_ACCESS.getCode(),
-                                    ErrorCodeEnum.PERMISSION_NOT_ACCESS.getMessage()), null));
-                        }
-                    });
-                })
-                .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler)
-                .and()
+                .exceptionHandling(exception ->
+                    exception.authenticationEntryPoint((req, res, e) -> handleAuthenticationException(e, res))
+                            .accessDeniedHandler(accessDeniedHandler))
                 .addFilterBefore(new JwtAuthenticationFilter(stringRedisTemplate, adminTokenProperties), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(customFilterSecurityInterceptor, FilterSecurityInterceptor.class);
         return http.build();
     }
+    private void handleAuthenticationException(Exception e, HttpServletResponse res) {
+        ErrorCodeEnum error;
+        if (e instanceof UserPasswordErrorException || e instanceof BadCredentialsException) {
+            error = ErrorCodeEnum.LOGIN_ERROR;
+        } else if (e instanceof JwtAuthenticationException) {
+            error = ErrorCodeEnum.TOKEN_ERROR;
+        } else {
+            error = ErrorCodeEnum.PERMISSION_NOT_ACCESS;
+        }
+        ResponseUtil.out(res, new GenericResponse<Void>(false, new ErrorDTO(error.getCode(), error.getMessage()), null));
+    }
 
-
-
+    /**
+     * 忽略地址，不被spring security过滤器拦截
+     */
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .antMatchers("/doc.html",
+                  "/v2/api-docs/**",
+                "/v3/api-docs/**",
+                "/swagger-resources/**",
+                "/webjars/**",
+                "/**/*.js",
+                "/**/*.css",
+                "/**/*.png",
+                "/**/*.ico",
+                "/file/**");
+    }
 }

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.PathMatcher;
 
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
@@ -45,6 +46,7 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
     /**
      * 加载权限表中所有操作请求权限
      */
+    @PostConstruct
     public void loadResourceDefine() {
         map = new HashMap<>(16);
         permissionMethodMap = new HashMap<>(16);
@@ -54,7 +56,8 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
          * 关闭权限
          */
         // 获取启用的权限操作请求
-        List<SPermissionDO> permissions = permissionService.list(new LambdaQueryWrapper<SPermissionDO>().eq(SPermissionDO::getType, 2).eq(SPermissionDO::getActive, true));
+        List<SPermissionDO> permissions = permissionService.list(new LambdaQueryWrapper<SPermissionDO>()
+                .eq(SPermissionDO::getType, 2).eq(SPermissionDO::getActive, true));
         // 测试环境权限过滤关闭
         // permissions.clear();
         for (SPermissionDO permission : permissions) {
@@ -93,9 +96,6 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
 
 
         if (decideType == 0) {
-            if (CollectionUtils.isEmpty(map)) {
-                loadResourceDefine();
-            }
             //1. 内存处理方式
             iterator = map.keySet().iterator();
             while (iterator.hasNext()) {
@@ -107,9 +107,6 @@ public class MySecurityMetadataSource implements FilterInvocationSecurityMetadat
                 }
             }
         } else {
-            if (!redisTemplate.hasKey("system:resource") && null == redisTemplate.opsForValue().get("system:resource")) {
-                loadResourceDefine();
-            }
             // redis处理方式
             if (redisTemplate.hasKey("system:resource")) {
                 String members = redisTemplate.opsForValue().get(("system:resource"));

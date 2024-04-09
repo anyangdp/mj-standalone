@@ -11,7 +11,6 @@ import org.springframework.security.authentication.InternalAuthenticationService
 @Getter
 public class UserPasswordErrorException extends InternalAuthenticationServiceException {
 
-    private static final long serialVersionUID = 3228262779033056857L;
     private String msg;
 
     public UserPasswordErrorException(String msg){

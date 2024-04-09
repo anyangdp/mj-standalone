@@ -21,7 +21,7 @@ public class SecurityUtil {
     }
 
     public static String principal() {
-        return SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        return JSON.toJSONString(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
     }
 
     public static Collection<? extends GrantedAuthority> authorities() {

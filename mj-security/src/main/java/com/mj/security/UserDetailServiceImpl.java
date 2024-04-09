@@ -58,7 +58,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
             dump.setAccountType("tenant").setResources(sTenantResourceDOS);
         }
         dump.setAuthorities(authorities);
-        SecurityUserDetails securityUserDetails = new SecurityUserDetails(dump);
-        return securityUserDetails;
+        return new SecurityUserDetails(dump);
     }
 }
