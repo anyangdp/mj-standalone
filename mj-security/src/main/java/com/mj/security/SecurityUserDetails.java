@@ -8,7 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @Author anyang
@@ -17,7 +19,8 @@ import java.util.List;
  */
 @Setter
 @Getter
-public class SecurityUserDetails extends UserDO implements UserDetails {
+public class SecurityUserDetails implements UserDetails {
+
     private boolean saveLogin;
 
     private String accountType;// admin,tenant ，账号类型，用于数据权限及菜单权限过滤，admin账号忽略所有限制
@@ -26,42 +29,48 @@ public class SecurityUserDetails extends UserDO implements UserDetails {
 
     private List<CustomGrantedAuthority> authorities; // 用户权限
 
+    private Set<String> role; // 用户角色
+
+    private UserDO user;
+
     public SecurityUserDetails() {
         super();
     }
 
-    public SecurityUserDetails(UserBO user) {
-        if (user != null) {
-            this.setId(user.getId());
-            this.setUsername(user.getUsername());
-            this.setNickname(user.getNickname());
-            this.setPassword(user.getPassword());
-            this.setActive(user.getActive());
-            this.setDeleted(user.isDeleted());
-            this.saveLogin = user.isSaveLogin();
-            this.accountType = user.getAccountType();
-            this.resources = user.getResources();
-            this.authorities = CollectionUtils.isEmpty(user.getAuthorities()) ? new ArrayList<>() : user.getAuthorities();
-        }
+    public SecurityUserDetails(UserDO user, List<CustomGrantedAuthority> authorities, Set<String> role, List<STenantResourceDO> resources) {
+        this.authorities = CollectionUtils.isEmpty(authorities) ? Collections.emptyList() : authorities;
+        this.role = CollectionUtils.isEmpty(role) ? Collections.emptySet() : role;
+        this.user = user;
+        this.resources = resources;
+    }
+
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getUsername();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return getActive();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return getActive();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return getActive();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return getActive();
+        return true;
     }
 }

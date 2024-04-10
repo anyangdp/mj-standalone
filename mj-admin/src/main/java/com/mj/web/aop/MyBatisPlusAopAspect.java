@@ -39,7 +39,7 @@ public class MyBatisPlusAopAspect {
                 // 设置字段可访问，以便修改值
                 if ("createdBy".equals(field.getName())) {
                     field.setAccessible(true);
-                    field.set(entity, securityUserDetails.getId());
+                    field.set(entity, securityUserDetails.getUser().getId());
                     break;
                 }
             }
@@ -71,7 +71,7 @@ public class MyBatisPlusAopAspect {
                 // 设置字段可访问，以便修改值
                 if ("updatedBy".equals(field.getName())) {
                     field.setAccessible(true);
-                    field.set(entity, securityUserDetails.getId());
+                    field.set(entity, securityUserDetails.getUser().getId());
                     break;
                 }
             }

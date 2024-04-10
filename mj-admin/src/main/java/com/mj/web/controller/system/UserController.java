@@ -76,11 +76,11 @@ public class UserController extends AbstractCRUDHandler<Long, UserDTO, UserServi
     @PutMapping("/change/password")
     public GenericResponse<Void> changePassword(@RequestBody @Valid ChangePasswordDTO request, BindingResult bindingResult) throws Exception {
         return ControllerTemplate.call(bindingResult, response -> {
-            SecurityUserDetails user = SecurityUtil.securityUserDetails();
-            if (bCryptPasswordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+            SecurityUserDetails userDetails = SecurityUtil.securityUserDetails();
+            if (bCryptPasswordEncoder.matches(request.getOldPassword(), userDetails.getUser().getPassword())) {
                 response.setResult(getService().updateById((UserDO) new UserDO()
                         .setPassword(bCryptPasswordEncoder.encode(request.getNewPassword()))
-                        .setId(user.getId())));
+                        .setId(userDetails.getUser().getId())));
             } else {
                 response.setError(new ErrorDTO(ErrorCodeEnum.BIZ_OPERATE_ERROR.getCode(), "密码错误"));
             }
