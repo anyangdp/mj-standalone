@@ -61,10 +61,10 @@ const DEFAULT_CONFIG = {
 		layout: [6, 6, 6, 6],
 		//小组件分布，com取值:views/home/components 文件名
 		copmsList: [
-			['product-dashboard'],
-			['device-dashboard'],
-			['protocol-dashboard'],
-			['network-dashboard'],
+			['visitor-total-dashboard'],
+			['visitor-dashboard'],
+			['process-dashboard'],
+			['task-dashboard'],
 		]
 	}
 }

@@ -1,21 +1,19 @@
 <template>
-
 	<el-card shadow="never">
-		<sc-statistic title="累计激活设备数" :value="count" suffix="个" groupSeparator>
+		<sc-statistic title="任务" :value="count" suffix="个" groupSeparator>
 			<sc-trend v-model="trend"></sc-trend>
 		</sc-statistic>
 	</el-card>
-
 </template>
 
 <script>
-import scStatistic from '@/components/scStatistic';
+import scStatistic from "@/components/scStatistic";
 
 export default {
-	name: "device-dashboard",
-	title: "时钟",
+	name: "task-dashboard",
+	title: "任务",
 	icon: "el-icon-clock",
-	description: "演示部件效果",
+	description: "任务",
 	components: {
 		scStatistic
 	},
@@ -30,9 +28,7 @@ export default {
 	},
 	methods: {
 		async initDashboard() {
-			let res = await this.$API.dashboard.device.get()
-			this.count = res.count
-			this.trend = res.trend
+
 		},
 	}
 }

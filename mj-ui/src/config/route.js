@@ -17,7 +17,7 @@ const routes = [
 		}, {
 			"name": "userCenter",
 			"path": "/usercenter",
-			"meta": {"title": "帐号信息", "icon": "el-icon-user", "tag": "NEW", "role": ["admin", "account"]},
+			"meta": {"title": "帐号信息", "icon": "el-icon-user", "tag": "NEW", "role": ["ROLE_admin", "account"]},
 			"component": "userCenter"
 		}]
 	},
@@ -33,7 +33,7 @@ const routes = [
 		}, {
 			"path": "/setting/user",
 			"name": "user",
-			meta: {"title": "用户管理", "icon": "el-icon-user-filled", "type": "menu", role: ["admin", "user-manage"]},
+			meta: {"title": "用户管理", "icon": "el-icon-user-filled", "type": "menu", role: ["ROLE_admin", "user-manage"]},
 			component: "setting/user"
 		}, {
 			"path": "/setting/tenant",
@@ -42,7 +42,7 @@ const routes = [
 				"title": "租户管理",
 				"icon": "el-icon-user-filled",
 				"type": "menu",
-				role: ["admin", "tenant-manage"]
+				role: ["ROLE_admin", "tenant-manage"]
 			},
 			"component": "setting/tenant"
 		}, {
@@ -57,7 +57,7 @@ const routes = [
 				"title": "菜单管理",
 				"icon": "el-icon-fold",
 				"type": "menu",
-				role: ["admin", "permission-manage"]
+				role: ["ROLE_admin", "permission-manage"]
 			},
 			"component": "setting/menu"
 		}

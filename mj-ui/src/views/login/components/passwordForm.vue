@@ -34,8 +34,8 @@ export default {
 		return {
 			userType: 'admin',
 			form: {
-				username: "admin",
-				password: "admin",
+				username: "",
+				password: "",
 				// autologin: false
 			},
 			rules: {
@@ -67,47 +67,30 @@ export default {
 				password: this.form.password
 			}
 			console.log(data)
-			//获取token
-			var token = await this.$API.auth.token.post(data)
-			this.$TOOL.cookie.set("TOKEN", token, {})
-			let user = await this.$API.auth.userInfo.get()
-			console.log("user:", user)
-			localStorage.setItem("test", "123")
-			this.$TOOL.data.set("USER_INFO", user)
-			let authorities = []
-			user.authorities.forEach((item) => {
-				authorities.push(item.authority)
-			})
-			this.$TOOL.data.set("USER_INFO_AUTHORITIES", authorities)
+			try {
+				//获取token
+				var token = await this.$API.auth.token.post(data)
+				this.$TOOL.cookie.set("TOKEN", token, {})
+				let user = await this.$API.auth.userInfo.get()
+				console.log("user:", user)
+				this.$TOOL.data.set("USER_INFO", user)
+				let authorities = []
+				user.authorities.forEach((item) => {
+					authorities.push(item.authority)
+				})
+				user.role.forEach((item) => {
+					authorities.push(item)
+				})
+				this.$TOOL.data.set("USER_INFO_AUTHORITIES", authorities)
 
-			console.log("124:", localStorage.getItem("test"))
-			// console.log("user", user)
-			// 	this.$TOOL.cookie.set("TOKEN", user.data.token, {
-			// 		expires: this.form.autologin? 24*60*60 : 0
-			// 	})
+				this.$router.replace({
+					path: '/'
+				})
+				this.$message.success("Login Success 登录成功")
+			} finally {
+				this.islogin = false
+			}
 
-			// if(menu.code == 200) {
-			// 	if(menu.data.menu.length == 0) {
-			// 		this.islogin = false
-			// 		this.$alert("当前用户无任何菜单权限，请联系系统管理员", "无权限访问", {
-			// 			type: 'error',
-			// 			center: true
-			// 		})
-			// 		return false
-			// 	}
-			// 	this.$TOOL.data.set("MENU", menu.data.menu)
-			// 	this.$TOOL.data.set("PERMISSIONS", menu.data.permissions)
-			// } else {
-			// 	this.islogin = false
-			// 	this.$message.warning(menu.message)
-			// 	return false
-			// }
-
-			this.$router.replace({
-				path: '/'
-			})
-			this.$message.success("Login Success 登录成功")
-			this.islogin = false
 		},
 	}
 }

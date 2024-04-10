@@ -120,7 +120,7 @@
 		},
 		created() {
 			var userInfo = this.$TOOL.data.get("USER_INFO");
-			this.userName = userInfo.nickname;
+			this.userName = userInfo.user.nickname;
 			this.userNameF = this.userName.substring(0,1);
 		},
 		methods: {
@@ -152,7 +152,9 @@
 						type: 'warning',
 						confirmButtonText: '退出',
 						confirmButtonClass: 'el-button--danger'
-					}).then(() => {
+					}).then(async () => {
+						let res = await this.$API.auth.logout.post()
+						console.log(res)
 						this.$router.replace({path: '/login'});
 					}).catch(() => {
 						//取消退出

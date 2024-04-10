@@ -1,13 +1,14 @@
 import config from "@/config"
 import http from "@/utils/request"
+import _ from "lodash";
 
 export default {
 	token: {
 		url: `${config.API_URL}/doLogin`,
 		name: "登录获取TOKEN",
-		post: async function(data={}){
+		post: _.throttle(async function(data={}){
 			return await http.post(this.url, data);
-		}
+		}, 1000)
 	},
 	userInfo: {
 		url: `${config.API_URL}/currentUser`,

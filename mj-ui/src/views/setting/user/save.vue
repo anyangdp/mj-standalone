@@ -5,18 +5,21 @@
 			<el-form-item label="头像" prop="avatar">
 				<sc-upload v-model="form.avatar" title="上传头像"></sc-upload>
 			</el-form-item>
-			<el-form-item label="登录账号" prop="userName">
-				<el-input v-model="form.username" :disabled="mode=='edit'" placeholder="用于登录系统" clearable></el-input>
+			<el-form-item label="登录账号" prop="username">
+				<el-input autocomplete="false" v-model="form.username" :disabled="mode=='edit'" placeholder="用于登录系统" clearable></el-input>
 			</el-form-item>
-			<el-form-item label="姓名" prop="name">
+			<el-form-item label="姓名" prop="nickname">
 				<el-input v-model="form.nickname" placeholder="请输入完整的真实姓名" clearable></el-input>
 			</el-form-item>
 			<template v-if="mode=='add'">
+				<!-- 登录密码 -->
 				<el-form-item label="登录密码" prop="password">
-					<el-input type="password" v-model="form.password" clearable show-password></el-input>
+					<el-input autocomplete="new-password" type="password" v-model="form.password" clearable show-password></el-input>
 				</el-form-item>
+
+				<!-- 确认密码 -->
 				<el-form-item label="确认密码" prop="password2">
-					<el-input type="password" v-model="form.password2" clearable show-password></el-input>
+					<el-input autocomplete="new-password" type="password" v-model="form.password2" clearable show-password></el-input>
 				</el-form-item>
 			</template>
 			<!--			<el-form-item label="所属部门" prop="dept">-->
@@ -60,36 +63,26 @@ export default {
 			},
 			//验证规则
 			rules: {
-				avatar: [
-					{required: true, message: '请上传头像'}
-				],
 				username: [
-					{required: true, message: '请输入登录账号'}
+					{required: true, message: '请输入登录账号', trigger: 'blur'}
 				],
 				nickname: [
-					{required: true, message: '请输入真实姓名'}
+					{required: true, message: '请输入真实姓名', trigger: 'blur'}
 				],
 				password: [
-					{required: true, message: '请输入登录密码'},
-					{
-						validator: (rule, value, callback) => {
-							if(this.form.password2 !== '') {
-								this.$refs.dialogForm.validateField('password2');
-							}
-							callback();
-						}
-					}
+					{required: true, message: '请输入登录密码', trigger: 'change'}
 				],
 				password2: [
-					{required: true, message: '请再次输入密码'},
+					{required: true, message: '请再次输入密码', trigger: 'blur'},
 					{
 						validator: (rule, value, callback) => {
-							if(value !== this.form.password) {
+							if (this.mode === 'add' && value !== this.form.password) {
 								callback(new Error('两次输入密码不一致!'));
 							} else {
 								callback();
 							}
-						}
+						},
+						trigger: 'blur'
 					}
 				],
 				// dept: [
@@ -122,6 +115,13 @@ export default {
 		open(mode = 'add') {
 			this.mode = mode;
 			this.visible = true;
+			// 清空密码与确认密码字段
+			this.$nextTick(() => {
+				if (mode === 'add') {
+					this.form.password = '';
+					this.form.password2 = '';
+				}
+			});
 			return this
 		},
 		//加载树数据

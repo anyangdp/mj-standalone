@@ -1,7 +1,7 @@
 <template>
 
 	<el-card shadow="never">
-		<sc-statistic title="累计支持协议" :value="count" suffix="个" groupSeparator>
+		<sc-statistic title="流程" :value="count" suffix="个" groupSeparator>
 			<sc-trend v-model="trend"></sc-trend>
 		</sc-statistic>
 	</el-card>
@@ -11,10 +11,10 @@
 import scStatistic from '@/components/scStatistic';
 
 export default {
-	name: "device-dashboard",
-	title: "协议",
+	name: "process-dashboard",
+	title: "流程",
 	icon: "el-icon-clock",
-	description: "协议模块",
+	description: "流程",
 	components: {
 		scStatistic
 	},
@@ -29,10 +29,7 @@ export default {
 	},
 	methods: {
 		async initDashboard() {
-			let res = await this.$API.dashboard.protocol.get()
-			this.count = res.count
-			this.trend = res.trend
-			console.log("仪表盘", res);
+
 		},
 	}
 }

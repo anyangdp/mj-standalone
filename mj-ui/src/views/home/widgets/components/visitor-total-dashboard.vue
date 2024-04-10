@@ -1,6 +1,6 @@
 <template>
 	<el-card shadow="never">
-		<sc-statistic title="累计激活产品数" :value="count" suffix="个" groupSeparator>
+		<sc-statistic title="总访客" :value="count" suffix="个" groupSeparator>
 			<sc-trend v-model="trend"></sc-trend>
 		</sc-statistic>
 	</el-card>
@@ -9,10 +9,10 @@
 <script>
 import scStatistic from '@/components/scStatistic';
 export default {
-	name: "product-dashboard",
-	title: "产品",
+	name: "visitor-total-dashboard",
+	title: "总访客",
 	icon: "el-icon-clock",
-	description: "产品模块",
+	description: "总访客",
 	components: {
 		scStatistic
 	},
@@ -27,10 +27,7 @@ export default {
 	},
 	methods: {
 		async initDashboard() {
-			let res = await this.$API.dashboard.product.get()
-			this.count = res.count
-			this.trend = res.trend
-			console.log("仪表盘", res);
+
 		},
 	}
 }

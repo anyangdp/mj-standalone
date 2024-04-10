@@ -23,7 +23,7 @@
 <script>
 	export default {
 		created() {
-			var userInfo = this.$TOOL.data.get("USER_INFO");
+			var userInfo = this.$TOOL.data.get("USER_INFO").user;
 			this.form.username = userInfo.username;
 			this.form.nickname = userInfo.nickname;
 			this.form.id = userInfo.id;

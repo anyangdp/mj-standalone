@@ -1,5 +1,5 @@
 <template>
-	<el-card shadow="hover" header="实时在线设备" v-loading="loading">
+	<el-card shadow="hover" header="实时在线消息" v-loading="loading">
 		<scEcharts ref="c1" height="300px" :option="option"></scEcharts>
 	</el-card>
 </template>

@@ -4,10 +4,9 @@
  */
 
 export default (error, vm)=>{
-	console.log("error:", error)
 	//过滤HTTP请求错误
-	if(error.status || error.status==0){
-		return false
+	if(!error.result){
+		return;
 	}
 
 	var errorMap = {
@@ -21,9 +20,6 @@ export default (error, vm)=>{
 	}
 	var errorName = errorMap[error.name] || "未知错误"
 
-	console.warn(`[SCUI error]: ${error}`);
-	console.error(error);
-	//throw error;
 
 	vm.$nextTick(() => {
 		vm.$notify.error({

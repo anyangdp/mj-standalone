@@ -117,8 +117,9 @@
 		},
 		created() {
 			var userInfo = this.$TOOL.data.get("USER_INFO");
-			this.user.userName = userInfo.nickname;
-			this.user.role = userInfo.username;
+			console.log(userInfo)
+			this.user.userName = userInfo.user.nickname;
+			this.user.role = userInfo.user.username;
 		},
 		methods: {
 			openPage(item){
