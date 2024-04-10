@@ -1,2 +1,72 @@
-application:
-  version: 1.0.0
+server:
+  port: 9201
+  servlet:
+    context-path: /
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+spring:
+  application:
+    name: mj-admin
+  datasource:
+    url: jdbc:mysql://localhost:13306/mj-admin?characterEncoding=utf8&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: Dev20990000!
+    filters: stat,wall
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.logSlowSql=true;druid.stat.mergeSql=true;druid.stat.slowSqlMillis=3000;
+  redis:
+    host: localhost
+    # 数据库索引 默认0
+    database: 0
+    port: 16379
+    # 超时时间 Duration类型 10秒
+    timeout: 10S
+    password: foobared2020
+  web:
+    resources:
+      static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
+web:
+  upload-path: /Users/say/Documents/github/mj-standalone
+#  upload-path: /tmp/file/
+redisson:
+  address: redis://${spring.redis.host}:${spring.redis.port}
+  password: ${spring.redis.password}
+  database: ${spring.redis.database}
+permission:
+  decide:
+    #权限拦截 0 内存处理， 1 redis处理
+    type: 0
+management:
+  endpoints:
+    web:
+      exposure:
+        # 暴露的端点
+        include: shutdown
+  endpoint:
+    #开启shutdown
+    shutdown:
+      enabled: true
+# mybatis-plus
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true # 虽然默认为 true ，但是还是显示去指定下。
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: input
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+  mapperLocations: classpath:mapper/**/*Mapper.xml
+  typeAliasesPackage: com.mj.**.domain.dobj
+logger:
+  path: /tmp/logs/${spring.application.name}
+  file: com.mj.web
+  pattern: ===%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger Line:%-3L - %msg%n
+  charset: utf-8
+  maxFile: 100MB
+  max:
+    file:
+      size: 100MB
+    history: 30

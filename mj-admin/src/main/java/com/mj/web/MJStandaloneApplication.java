@@ -16,6 +16,7 @@ import springfox.documentation.oas.annotations.EnableOpenApi;
 @Slf4j
 @SpringBootApplication(scanBasePackages = {"com.mj"})
 public class MJStandaloneApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(MJStandaloneApplication.class, args);
     }

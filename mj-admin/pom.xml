@@ -131,6 +131,12 @@
             <version>${mj.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.mj</groupId>
+            <artifactId>mj-activiti7</artifactId>
+            <version>${mj.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

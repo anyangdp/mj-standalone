@@ -20,10 +20,6 @@
     </properties>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>com.mj</groupId>-->
-<!--            <artifactId>mj-framework</artifactId>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>com.mj</groupId>
