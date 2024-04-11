@@ -70,7 +70,7 @@ export default {
 		}
 	},
 	userUnbind: {
-		url: `${config.API_URL}/${path}//user/unbind`,
+		url: `${config.API_URL}/${path}/user/unbind`,
 		name: "用户解绑",
 		post: async function(data){
 			return await http.post(this.url, data, {
@@ -103,7 +103,7 @@ export default {
 		}
 	},
 	resourceUnbind: {
-		url: `${config.API_URL}/${path}//resource/unbind`,
+		url: `${config.API_URL}/${path}/resource/unbind`,
 		name: "资产解绑",
 		post: async function(data){
 			return await http.post(this.url, data, {

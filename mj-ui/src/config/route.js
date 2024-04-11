@@ -6,78 +6,89 @@
 
 const routes = [
 	{
-		"name": "home",
-		"path": "/home",
-		"meta": {"title": "首页", "icon": "el-icon-eleme-filled", "type": "menu"},
-		"children": [{
-			"name": "dashboard",
-			"path": "/dashboard",
-			"meta": {"title": "控制台", "icon": "el-icon-menu", "affix": true},
-			"component": "home"
-		}, {
-			"name": "userCenter",
-			"path": "/usercenter",
-			"meta": {"title": "帐号信息", "icon": "el-icon-user", "tag": "NEW", "role": ["ROLE_admin", "account"]},
-			"component": "userCenter"
-		}]
+		name: "home",
+		path: "/home",
+		meta: {title: "首页", icon: "el-icon-eleme-filled", type: "menu"},
+		children: [
+			{
+				name: "dashboard",
+				path: "/dashboard",
+				meta: {title: "控制台", icon: "el-icon-menu", affix: true},
+				component: "home"
+			},
+			{
+				name: "userCenter",
+				path: "/usercenter",
+				meta: {title: "帐号信息", icon: "el-icon-user", tag: "NEW", role: ["ROLE_admin", "account"]},
+				component: "userCenter"
+			}
+		]
 	},
 	{
-		"name": "setting",
-		"path": "/setting",
-		"meta": {"title": "配置", "icon": "el-icon-setting", "type": "menu"},
-		"children": [{
-			"path": "/setting/system",
-			"name": "system",
-			"meta": {"title": "系统设置", "icon": "el-icon-tools", "type": "menu"},
-			"component": "setting/system"
-		}, {
-			"path": "/setting/user",
-			"name": "user",
-			meta: {"title": "用户管理", "icon": "el-icon-user-filled", "type": "menu", role: ["ROLE_admin", "user-manage"]},
-			component: "setting/user"
-		}, {
-			"path": "/setting/tenant",
-			"name": "tenant",
-			meta: {
-				"title": "租户管理",
-				"icon": "el-icon-user-filled",
-				"type": "menu",
-				role: ["ROLE_admin", "tenant-manage"]
+		name: "workflow",
+		path: "/workflow",
+		meta: {title: "工作流", icon: "el-icon-eleme-filled", type: "menu"},
+		children: [
+			{
+				name: "process-definition",
+				path: "/workflow/process",
+				meta: {title: "流程定义", icon: "el-icon-menu", affix: true, type: "menu"},
+				component: "workflow/process"
+			}
+		]
+	},
+	{
+		name: "setting",
+		path: "/setting",
+		meta: {title: "配置", icon: "el-icon-setting", type: "menu"},
+		children: [
+			{
+				path: "/setting/system",
+				name: "system",
+				meta: {title: "系统设置", icon: "el-icon-tools", type: "menu"},
+				component: "setting/system"
 			},
-			"component": "setting/tenant"
-		}, {
-			"path": "/setting/role",
-			"name": "role",
-			"meta": {"title": "角色管理", "icon": "el-icon-notebook", "type": "menu"},
-			"component": "setting/role"
-		}, {
-			"path": "/setting/menu",
-			"name": "settingMenu",
-			meta: {
-				"title": "菜单管理",
-				"icon": "el-icon-fold",
-				"type": "menu",
-				role: ["ROLE_admin", "permission-manage"]
+			{
+				path: "/setting/user",
+				name: "user",
+				meta: {title: "用户管理", icon: "el-icon-user-filled", type: "menu", role: ["ROLE_admin", "user-manage"]},
+				component: "setting/user"
 			},
-			"component": "setting/menu"
-		}
+			{
+				path: "/setting/tenant",
+				name: "tenant",
+				meta: {"title": "租户管理", icon: "el-icon-user-filled", type: "menu", role: ["ROLE_admin", "tenant-manage"]},
+				component: "setting/tenant"
+			},
+			{
+				path: "/setting/role",
+				name: "role",
+				meta: {title: "角色管理", icon: "el-icon-notebook", type: "menu"},
+				component: "setting/role"
+			},
+			{
+				path: "/setting/menu",
+				name: "settingMenu",
+				meta: {title: "菜单管理", icon: "el-icon-fold", type: "menu", role: ["ROLE_admin", "permission-manage"]},
+				component: "setting/menu"
+			}
 		]
 	},
 	{
 		name: "log",
 		path: "/log",
-		meta: {"title": "日志管理", "icon": "el-icon-warning", "type": "menu"},
+		meta: {title: "日志管理", icon: "el-icon-warning", type: "menu"},
 		children: [
 			{
 				path: "/log/access",
 				name: "log-access",
-				meta: {"title": "访问日志", "icon": "el-icon-warning", "type": "menu"},
+				meta: {title: "访问日志", icon: "el-icon-warning", type: "menu"},
 				component: "log/access"
 			},
 			{
 				path: "/log/system",
 				name: "log-system",
-				meta: {"title": "系统日志", "icon": "el-icon-warning", "type": "menu"},
+				meta: {title: "系统日志", icon: "el-icon-warning", type: "menu"},
 				component: "log/system"
 			}
 		]

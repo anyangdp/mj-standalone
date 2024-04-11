@@ -2,7 +2,6 @@ package com.mj.web.controller.workflow;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mj.activiti.domain.dto.DefinitionIdDTO;
-import com.mj.activiti.domain.dto.PageDomain;
 import com.mj.activiti.domain.dto.ProcessDefinitionDTO;
 import com.mj.activiti.service.IProcessDefinitionService;
 import com.mj.common.exception.exception.BizException;
@@ -41,7 +40,7 @@ public class ProcessDefinitionController {
     }
 
     @ApiOperation(value = "获取当前流程", notes = "获取当前流程")
-    @GetMapping(value = "/getDefinitions/{instanceId}")
+    @GetMapping(value = "/retrieve/{instanceId}")
     public GenericResponse<DefinitionIdDTO> getDefinitionsByInstanceId(@PathVariable("instanceId") String instanceId) throws Exception {
         return ControllerTemplate.call(response -> {
             response.setResult(true).setData(processDefinitionService.getDefinitionsByInstanceId(instanceId));
@@ -49,7 +48,7 @@ public class ProcessDefinitionController {
     }
 
     @ApiOperation(value = "删除流程定义", notes = "删除流程定义")
-    @DeleteMapping(value = "/remove/{deploymentId}")
+    @DeleteMapping(value = "/{deploymentId}")
     public GenericResponse<Void> delDefinition(@PathVariable("deploymentId") String deploymentId) throws Exception {
         return ControllerTemplate.call(response -> {
             processDefinitionService.deleteProcessDefinitionById(deploymentId);
