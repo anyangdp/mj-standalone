@@ -36,18 +36,6 @@ public class FileUploadController {
     @Value("${web.upload-path}")
     private String uploadPath;
 
-    // @ApiOperation(value = "文件上传")
-    // @PostMapping(value = "/upload")
-    @Deprecated
-    public GenericResponse<String> uploadToClasspath(MultipartFile file) throws Exception {
-        return ControllerTemplate.call(response -> {
-            String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
-            String realPath = ResourceUtils.getURL("classpath:").getPath() + "static";
-            String name = snowFlake.nextIdStr() + "." + suffix;
-            response.setResult(FileUtil.createFile(file, file.getName(), realPath+"/upload/", name));
-            response.setData(ServletUriComponentsBuilder.fromCurrentContextPath().path("/upload/").path(LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))).path("/").path(name).toUriString());
-        });
-    }
     @ApiOperation(value = "文件上传")
     @PostMapping(value = "/upload")
     public GenericResponse<String> upload(@RequestPart("file") MultipartFile file) throws Exception {

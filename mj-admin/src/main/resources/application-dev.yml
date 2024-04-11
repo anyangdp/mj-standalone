@@ -28,7 +28,8 @@ spring:
     resources:
       static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
 web:
-  upload-path: /Users/say/Documents/github/mj-standalone
+#  upload-path: /Users/say/Documents/github/mj-standalone
+  upload-path: E:\github\mj-standalone\upload-file
 #  upload-path: /tmp/file/
 redisson:
   address: redis://${spring.redis.host}:${spring.redis.port}

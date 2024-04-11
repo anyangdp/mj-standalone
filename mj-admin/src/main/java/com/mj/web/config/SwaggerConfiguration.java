@@ -69,6 +69,19 @@ public class SwaggerConfiguration {
                 .build().securityContexts(Lists.newArrayList(securityContext())).securitySchemes(Lists.<SecurityScheme>newArrayList(apiKey())).globalOperationParameters(getHeader());
     }
 
+    @Profile("dev")
+    @Bean(value = "workflowGroup")
+    @Order(value = 1)
+    public Docket workflowGroupDocket() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(inventoryGroupApiInfo())
+                .groupName("工作流管理")
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.mj.web.controller.workflow"))
+                .paths(PathSelectors.any())
+                .build().securityContexts(Lists.newArrayList(securityContext())).securitySchemes(Lists.<SecurityScheme>newArrayList(apiKey())).globalOperationParameters(getHeader());
+    }
+
     private ApiInfo inventoryGroupApiInfo(){
         return new ApiInfoBuilder()
                 .title("mj-后台管理")

@@ -10,6 +10,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 
 @Configuration
 public class ActivitiConfig {
+    /**
+     * 解决多个TaskExecutor bean在加载时不识别问题
+     * @return
+     */
     @Bean
     @Primary
     public TaskExecutor primaryTaskExecutor() {
