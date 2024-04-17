@@ -81,6 +81,7 @@ export default {
 				user.role.forEach((item) => {
 					authorities.push(item)
 				})
+				console.log("authorities:", authorities)
 				this.$TOOL.data.set("USER_INFO_AUTHORITIES", authorities)
 
 				this.$router.replace({

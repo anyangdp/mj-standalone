@@ -102,11 +102,7 @@ router.onError((error) => {
 //入侵追加自定义方法、对象
 router.sc_getMenu = () => {
 	// var apiMenu = tool.data.get("MENU") || []
-	let userInfo = tool.data.get("USER_INFO")
-	let authorities = []
-	userInfo.authorities.forEach((item) => {
-		authorities.push(item.authority)
-	})
+	let authorities = tool.data.get("USER_INFO_AUTHORITIES")
 	let userMenu = treeFilter(userRoutes, node => {
 		return node.meta.role ? node.meta.role.filter(item => authorities.indexOf(item) > -1).length > 0 : true
 	})
