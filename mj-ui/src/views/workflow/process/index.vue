@@ -112,7 +112,7 @@
 			},
 			OnlineDrawingProcess() {
 				this.modelVisible = true;
-				localStorage.setItem("VUE_APP_BASE_API", process.env.VUE_APP_BASE_API)
+				localStorage.setItem("VUE_APP_API_BASEURL", process.env.VUE_APP_API_BASEURL)
 				this.modelerUrl = "/bpmnjs/index.html?type=addBpmn";
 			},
 			handleImport() {
@@ -121,10 +121,12 @@
 			},
 			//查看
 			table_show(row){
-				this.dialog.save = true
-				this.$nextTick(() => {
-					this.$refs.saveDialog.open('show').setData(row)
-				})
+				console.log(row)
+				this.modelVisible = true;
+				console.log(process.env.VUE_APP_API_BASEURL)
+				localStorage.setItem("VUE_APP_API_BASEURL", process.env.VUE_APP_API_BASEURL)
+				console.log(localStorage.getItem("VUE_APP_API_BASEURL"))
+				this.modelerUrl = '/bpmnjs/index.html?type=lookBpmn&deploymentFileUUID=' + row.deploymentId + '&deploymentName=' + encodeURI(row.resourceName);
 			},
 			//权限设置
 			userBind(row){

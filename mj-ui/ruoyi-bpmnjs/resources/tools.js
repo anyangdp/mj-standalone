@@ -75,7 +75,7 @@ const tools = {
                     "stringBPMN":xml
                 }
             $.ajax({
-                url: localStorage.getItem("VUE_APP_BASE_API")+'/processDefinition/addDeploymentByString',
+                url: localStorage.getItem("VUE_APP_API_BASEURL")+'/processDefinition/addDeploymentByString',
                 type: 'POST',
                 dataType:"json",
                 data: param,
@@ -133,7 +133,7 @@ const tools = {
         var fm = new FormData();
         fm.append('processFile', FileUpload);
         $.ajax({
-            url: localStorage.getItem("VUE_APP_BASE_API")+'/processDefinition/upload',
+            url: localStorage.getItem("VUE_APP_API_BASEURL")+'/processDefinition/upload',
             // url: 'http://localhost:8080/processDefinition/upload',
             type: 'POST',
             data: fm,
@@ -141,7 +141,7 @@ const tools = {
             contentType: false, //禁止设置请求类型
             processData: false, //禁止jquery对DAta数据的处理,默认会处理
             success: function (result) {
-                var url = result.data.substr(0,4)=="http"?result.data:localStorage.getItem("VUE_APP_BASE_API")+ result.data
+                var url = result.data.substr(0,4)=="http"?result.data:localStorage.getItem("VUE_APP_API_BASEURL")+ result.data
                 tools.openFromUrl(bpmnModeler, container, url)
             },
             error: function (err) {

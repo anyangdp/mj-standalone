@@ -28,8 +28,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 /**
  * @Author anyang
@@ -78,6 +82,8 @@ public class WebSecurityConfig {
     @Order(1)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.formLogin().disable()
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -95,6 +101,22 @@ public class WebSecurityConfig {
                 .addFilterBefore(customFilterSecurityInterceptor, FilterSecurityInterceptor.class);
         return http.build();
     }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // 允许从任何源
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        // 允许任何头
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        // 允许任何方法 (post, get, put, delete, options)
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "OPTIONS"));
+        // 为所有路径配置应用此源
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
     private void handleAuthenticationException(Exception e, HttpServletResponse res) {
         ErrorCodeEnum error;
         if (e instanceof UserPasswordErrorException || e instanceof BadCredentialsException) {
@@ -118,6 +140,7 @@ public class WebSecurityConfig {
                 "/v3/api-docs/**",
                 "/swagger-resources/**",
                 "/webjars/**",
+                "/processDefinition/getDefinitionXML",
                 "/**/*.js",
                 "/**/*.css",
                 "/**/*.png",
