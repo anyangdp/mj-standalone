@@ -1,6 +1,6 @@
 package ${package}.controller;
 
-import com.mj.common.framework.handler.AbstractCRUDHandler;
+import com.mj.framework.handler.AbstractCRUDHandler;
 import ${package}.domain.dto.${className}DTO;
 import ${package}.service.${className}Service;
 import org.springframework.web.bind.annotation.RestController;

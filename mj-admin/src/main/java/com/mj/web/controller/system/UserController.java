@@ -1,6 +1,5 @@
 package com.mj.web.controller.system;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mj.framework.constants.ErrorCodeEnum;
@@ -11,8 +10,8 @@ import com.mj.framework.handler.GenericResponse;
 import com.mj.framework.util.ValueUtil;
 import com.mj.security.SecurityUserDetails;
 import com.mj.security.util.SecurityUtil;
-import com.mj.web.system.domain.dobj.UserDO;
-import com.mj.web.system.domain.dobj.UserMenuPermissionDO;
+import com.mj.web.system.domain.dobj.SUserDO;
+import com.mj.web.system.domain.dobj.SUserMenuPermissionDO;
 import com.mj.web.system.domain.dto.UserDTO;
 import com.mj.web.system.domain.dto.UserMenuPermissionDTO;
 import com.mj.web.system.domain.dto.request.ChangePasswordDTO;
@@ -24,7 +23,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
@@ -68,7 +66,7 @@ public class UserController extends AbstractCRUDHandler<Long, UserDTO, UserServi
                 response.setError(new ErrorDTO(ErrorCodeEnum.BIZ_OPERATE_ERROR.getCode(), "禁止操作"));
                 return;
             }
-            response.setResult(getService().updateById((UserDO) new UserDO().setPassword(bCryptPasswordEncoder.encode(request.getNewPassword())).setId(request.getId())));
+            response.setResult(getService().updateById((SUserDO) new SUserDO().setPassword(bCryptPasswordEncoder.encode(request.getNewPassword())).setId(request.getId())));
         });
     }
 
@@ -78,7 +76,7 @@ public class UserController extends AbstractCRUDHandler<Long, UserDTO, UserServi
         return ControllerTemplate.call(bindingResult, response -> {
             SecurityUserDetails userDetails = SecurityUtil.securityUserDetails();
             if (bCryptPasswordEncoder.matches(request.getOldPassword(), userDetails.getUser().getPassword())) {
-                response.setResult(getService().updateById((UserDO) new UserDO()
+                response.setResult(getService().updateById((SUserDO) new SUserDO()
                         .setPassword(bCryptPasswordEncoder.encode(request.getNewPassword()))
                         .setId(userDetails.getUser().getId())));
             } else {
@@ -122,10 +120,10 @@ public class UserController extends AbstractCRUDHandler<Long, UserDTO, UserServi
     @PostMapping("/authorize")
     public GenericResponse<Void> authorize(@RequestBody @Valid UserAuthorizeDTO request, BindingResult bindingResult) throws Exception {
         return ControllerTemplate.call(bindingResult, response -> {
-            response.setResult(userMenuPermissionService.remove(new LambdaQueryWrapper<>(new UserMenuPermissionDO().setUserId(request.getUserId()))));
+            response.setResult(userMenuPermissionService.remove(new LambdaQueryWrapper<>(new SUserMenuPermissionDO().setUserId(request.getUserId()))));
             if (!CollectionUtils.isEmpty(request.getPermissionList())) {
-                List<UserMenuPermissionDO> list = new ArrayList<>();
-                request.getPermissionList().forEach(item -> list.add(new UserMenuPermissionDO().setUserId(request.getUserId()).setPermissionId(item)));
+                List<SUserMenuPermissionDO> list = new ArrayList<>();
+                request.getPermissionList().forEach(item -> list.add(new SUserMenuPermissionDO().setUserId(request.getUserId()).setPermissionId(item)));
                 response.setResult(userMenuPermissionService.saveBatch(list));
             }
         });
@@ -135,7 +133,7 @@ public class UserController extends AbstractCRUDHandler<Long, UserDTO, UserServi
     @GetMapping("/authority/{userId}")
     public GenericResponse<List<UserMenuPermissionDTO>> authority(@PathVariable String userId) throws Exception {
         return ControllerTemplate.call(response -> {
-            response.setResult(true).setData(ValueUtil.dumpList(userMenuPermissionService.list(new LambdaQueryWrapper<>(new UserMenuPermissionDO().setUserId(userId))), UserMenuPermissionDTO.class));
+            response.setResult(true).setData(ValueUtil.dumpList(userMenuPermissionService.list(new LambdaQueryWrapper<>(new SUserMenuPermissionDO().setUserId(userId))), UserMenuPermissionDTO.class));
         });
     }
 }

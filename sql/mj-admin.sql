@@ -198,8 +198,8 @@ COMMIT;
 -- ----------------------------
 -- Table structure for user
 -- ----------------------------
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
+DROP TABLE IF EXISTS `s_user`;
+CREATE TABLE `s_user` (
   `id` varchar(64) NOT NULL COMMENT '主键',
   `username` varchar(256) NOT NULL COMMENT '用户名',
   `password` varchar(256) NOT NULL COMMENT '密码',
@@ -221,31 +221,31 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 BEGIN;
-INSERT INTO `user` (`id`, `username`, `password`, `nickname`, `avatar`, `created_by`, `created_at`, `updated_by`, `updated_at`, `active`, `deleted`, `deleted_by`, `deleted_at`, `deleted_msg`) VALUES ('805397896395489280', 'admin', '$2a$10$5dnKhdHrFNFOJp8ghinBOu4pq0D8n2qnGqILapFF92WSz9E5aKjqu', '超级管理员', NULL, NULL, '2022-12-28 08:44:49', NULL, '2022-12-28 08:44:49', 1, 0, NULL, NULL, NULL);
-INSERT INTO `user` (`id`, `username`, `password`, `nickname`, `avatar`, `created_by`, `created_at`, `updated_by`, `updated_at`, `active`, `deleted`, `deleted_by`, `deleted_at`, `deleted_msg`) VALUES ('807956359726235648', 'test1', '$2a$10$k2wUNvZPYfOgDJDCXwNAw.GD9HdIZKWYbCsKlmFAFD/tk9glOA1xe', '普通用户1', 'http://localhost:9201/iot/admin/file/2023-01-29/817025198304788480.jpg', NULL, '2023-01-04 10:11:13', NULL, '2023-02-13 14:56:14', 1, 0, NULL, NULL, NULL);
-INSERT INTO `user` (`id`, `username`, `password`, `nickname`, `avatar`, `created_by`, `created_at`, `updated_by`, `updated_at`, `active`, `deleted`, `deleted_by`, `deleted_at`, `deleted_msg`) VALUES ('817026035840188416', 'test2', '$2a$10$k2wUNvZPYfOgDJDCXwNAw.GD9HdIZKWYbCsKlmFAFD/tk9glOA1xe', '普通用户2', 'http://localhost:9201/iot/admin/file/2023-01-29/817025937932550144.jpg', NULL, '2023-01-29 10:50:52', NULL, '2023-12-14 15:49:47', 1, 0, NULL, NULL, NULL);
+INSERT INTO `s_user` (`id`, `username`, `password`, `nickname`, `avatar`, `created_by`, `created_at`, `updated_by`, `updated_at`, `active`, `deleted`, `deleted_by`, `deleted_at`, `deleted_msg`) VALUES ('805397896395489280', 'admin', '$2a$10$5dnKhdHrFNFOJp8ghinBOu4pq0D8n2qnGqILapFF92WSz9E5aKjqu', '超级管理员', NULL, NULL, '2022-12-28 08:44:49', NULL, '2022-12-28 08:44:49', 1, 0, NULL, NULL, NULL);
+INSERT INTO `s_user` (`id`, `username`, `password`, `nickname`, `avatar`, `created_by`, `created_at`, `updated_by`, `updated_at`, `active`, `deleted`, `deleted_by`, `deleted_at`, `deleted_msg`) VALUES ('807956359726235648', 'test1', '$2a$10$k2wUNvZPYfOgDJDCXwNAw.GD9HdIZKWYbCsKlmFAFD/tk9glOA1xe', '普通用户1', 'http://localhost:9201/iot/admin/file/2023-01-29/817025198304788480.jpg', NULL, '2023-01-04 10:11:13', NULL, '2023-02-13 14:56:14', 1, 0, NULL, NULL, NULL);
+INSERT INTO `s_user` (`id`, `username`, `password`, `nickname`, `avatar`, `created_by`, `created_at`, `updated_by`, `updated_at`, `active`, `deleted`, `deleted_by`, `deleted_at`, `deleted_msg`) VALUES ('817026035840188416', 'test2', '$2a$10$k2wUNvZPYfOgDJDCXwNAw.GD9HdIZKWYbCsKlmFAFD/tk9glOA1xe', '普通用户2', 'http://localhost:9201/iot/admin/file/2023-01-29/817025937932550144.jpg', NULL, '2023-01-29 10:50:52', NULL, '2023-12-14 15:49:47', 1, 0, NULL, NULL, NULL);
 COMMIT;
 
 -- ----------------------------
--- Table structure for user_menu_permission
+-- Table structure for s_user_menu_permission
 -- ----------------------------
-DROP TABLE IF EXISTS `user_menu_permission`;
-CREATE TABLE `user_menu_permission` (
+DROP TABLE IF EXISTS `s_user_menu_permission`;
+CREATE TABLE `s_user_menu_permission` (
   `user_id` varchar(40) NOT NULL COMMENT '用户id',
   `permission_id` varchar(40) NOT NULL COMMENT '权限id',
-  KEY `user_menu_permission_user_id_permission_id_index` (`user_id`,`permission_id`)
+  KEY `s_user_menu_permission_user_id_permission_id_index` (`user_id`,`permission_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COMMENT='用户菜单权限关联表';
 
 -- ----------------------------
--- Records of user_menu_permission
+-- Records of s_user_menu_permission
 -- ----------------------------
 BEGIN;
-INSERT INTO `user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'account');
-INSERT INTO `user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'console');
-INSERT INTO `user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'device');
-INSERT INTO `user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'device-manage');
-INSERT INTO `user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'home');
-INSERT INTO `user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'product');
+INSERT INTO `s_user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'account');
+INSERT INTO `s_user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'console');
+INSERT INTO `s_user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'device');
+INSERT INTO `s_user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'device-manage');
+INSERT INTO `s_user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'home');
+INSERT INTO `s_user_menu_permission` (`user_id`, `permission_id`) VALUES ('807956359726235648', 'product');
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

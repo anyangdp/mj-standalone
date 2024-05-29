@@ -1,8 +1,8 @@
 package ${package}.domain.dobj;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.mj.common.framework.handler.AbstractDO;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.mj.framework.handler.AbstractDO;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import java.time.LocalDateTime;

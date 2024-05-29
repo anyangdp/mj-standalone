@@ -1,13 +1,12 @@
 package com.mj.security;
 
 import com.mj.web.system.domain.dobj.STenantResourceDO;
-import com.mj.web.system.domain.dobj.UserDO;
+import com.mj.web.system.domain.dobj.SUserDO;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -31,13 +30,13 @@ public class SecurityUserDetails implements UserDetails {
 
     private Set<String> role; // 用户角色
 
-    private UserDO user;
+    private SUserDO user;
 
     public SecurityUserDetails() {
         super();
     }
 
-    public SecurityUserDetails(UserDO user, List<CustomGrantedAuthority> authorities, Set<String> role, List<STenantResourceDO> resources) {
+    public SecurityUserDetails(SUserDO user, List<CustomGrantedAuthority> authorities, Set<String> role, List<STenantResourceDO> resources) {
         this.authorities = CollectionUtils.isEmpty(authorities) ? Collections.emptyList() : authorities;
         this.role = CollectionUtils.isEmpty(role) ? Collections.emptySet() : role;
         this.user = user;

@@ -16,7 +16,7 @@ import java.util.List;
 @ApiModel(value = "用户表")
 @Accessors(chain = true)
 @Data
-public class UserBO extends AbstractDTO<String> {
+public class SUserBO extends AbstractDTO<String> {
 
     @ApiModelProperty(value = "用户名")
     private String username;

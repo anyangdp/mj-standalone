@@ -1,11 +1,10 @@
 package com.mj.security;
 
-import com.mj.framework.util.ValueUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mj.security.exception.UserPasswordErrorException;
 import com.mj.web.system.domain.dobj.STenantResourceDO;
-import com.mj.web.system.domain.dobj.UserDO;
-import com.mj.web.system.domain.dobj.UserMenuPermissionDO;
+import com.mj.web.system.domain.dobj.SUserDO;
+import com.mj.web.system.domain.dobj.SUserMenuPermissionDO;
 import com.mj.web.system.service.STenantResourceService;
 import com.mj.web.system.service.UserMenuPermissionService;
 import com.mj.web.system.service.UserService;
@@ -37,35 +36,35 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDO userDO = userService.getOne(new LambdaQueryWrapper<UserDO>().eq(UserDO::getUsername, username)
-                .eq(UserDO::getActive, true).eq(UserDO::isDeleted, false));
-        if (null == userDO) {
+        SUserDO SUserDO = userService.getOne(new LambdaQueryWrapper<SUserDO>().eq(SUserDO::getUsername, username)
+                .eq(SUserDO::getActive, true).eq(SUserDO::isDeleted, false));
+        if (null == SUserDO) {
             log.info("用户名或密码错误");
             throw new UserPasswordErrorException("用户名或密码错误");
         }
-        if (userDO.getUsername().equals("admin")) {
+        if (SUserDO.getUsername().equals("admin")) {
             List<CustomGrantedAuthority> authorities = new ArrayList<>();
             Set<String> role = new HashSet<>();
-            role.add("ROLE_" + userDO.getUsername());
-            return createSecurityUser(userDO, authorities, role, Collections.emptyList());
+            role.add("ROLE_" + SUserDO.getUsername());
+            return createSecurityUser(SUserDO, authorities, role, Collections.emptyList());
         } else {
-            return createSecurityUser(userDO);
+            return createSecurityUser(SUserDO);
         }
     }
 
-    private UserDetails createSecurityUser(UserDO one) {
+    private UserDetails createSecurityUser(SUserDO one) {
         return createSecurityUser(one, loadAuthorities(one.getId()), loadRole(one.getId()), loadResource(one.getId()));
     }
 
-    private UserDetails createSecurityUser(UserDO user, List<CustomGrantedAuthority> authorities, Set<String> role, List<STenantResourceDO> resources) {
+    private UserDetails createSecurityUser(SUserDO user, List<CustomGrantedAuthority> authorities, Set<String> role, List<STenantResourceDO> resources) {
         return new SecurityUserDetails(user, authorities, role, resources);
     }
 
     private List<CustomGrantedAuthority> loadAuthorities(String id) {
         List<CustomGrantedAuthority> authorities = new ArrayList<>();
-        List<UserMenuPermissionDO> list = userMenuPermissionService.list(new LambdaQueryWrapper<UserMenuPermissionDO>().eq(UserMenuPermissionDO::getUserId, id));
+        List<SUserMenuPermissionDO> list = userMenuPermissionService.list(new LambdaQueryWrapper<SUserMenuPermissionDO>().eq(SUserMenuPermissionDO::getUserId, id));
         if (!CollectionUtils.isEmpty(list)) {
-            list.stream().map(UserMenuPermissionDO::getPermissionId).forEach(item -> authorities.add(new CustomGrantedAuthority(item)));
+            list.stream().map(SUserMenuPermissionDO::getPermissionId).forEach(item -> authorities.add(new CustomGrantedAuthority(item)));
         }
         return authorities;
     }

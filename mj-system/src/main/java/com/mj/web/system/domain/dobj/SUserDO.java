@@ -8,10 +8,10 @@ import lombok.experimental.Accessors;
 /**
  * 用户表
  */
-@TableName("user")
+@TableName("s_user")
 @Accessors(chain = true)
 @Data
-public class UserDO extends AbstractDO<String> {
+public class SUserDO extends AbstractDO<String> {
 
     // 用户名
     private String username;

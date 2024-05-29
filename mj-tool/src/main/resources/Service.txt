@@ -1,6 +1,6 @@
 package ${package}.service;
 
-import com.mj.common.framework.service.CRUDService;
+import com.mj.framework.service.CRUDService;
 import ${package}.domain.dobj.${className}DO;
 import ${package}.domain.dto.${className}DTO;
 

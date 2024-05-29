@@ -13,7 +13,7 @@ import com.mj.framework.util.ValueUtil;
 import com.mj.web.system.domain.dobj.SRoleDO;
 import com.mj.web.system.domain.dobj.SRoleMenuPermissionDO;
 import com.mj.web.system.domain.dobj.SRoleUserDO;
-import com.mj.web.system.domain.dobj.UserDO;
+import com.mj.web.system.domain.dobj.SUserDO;
 import com.mj.web.system.domain.dto.SRoleDTO;
 import com.mj.web.system.domain.dto.SRoleMenuPermissionDTO;
 import com.mj.web.system.domain.dto.request.BindRoleUserDTO;
@@ -40,11 +40,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/sRole")
 public class SRoleController extends AbstractCRUDHandler<Long, SRoleDTO, SRoleService> {
-    @Autowired
-    private SRoleService sRoleService;
-
-    @Autowired
-    private SnowFlake snowFlake;
 
     @Autowired
     private SRoleMenuPermissionService sRoleMenuPermissionService;
@@ -68,7 +63,7 @@ public class SRoleController extends AbstractCRUDHandler<Long, SRoleDTO, SRoleSe
     @PutMapping("/update")
     public GenericResponse<Void> update(@RequestBody @Valid SRoleDTO request, BindingResult bindingResult) throws Exception {
         return ControllerTemplate.call(bindingResult, (GenericResponse<Void> response) -> {
-            boolean save = sRoleService.updateById(ValueUtil.dump(request, SRoleDO.class));
+            boolean save = getService().updateById(ValueUtil.dump(request, SRoleDO.class));
             response.setResult(save);
         });
     }
@@ -86,7 +81,7 @@ public class SRoleController extends AbstractCRUDHandler<Long, SRoleDTO, SRoleSe
             IPage<SRoleDTO> rolePage = PageUtil.convertMybatisPlus(getService().page(new Page<>(page, pageSize), sRoleDOLambdaQueryWrapper), SRoleDTO.class);
             rolePage.getRecords().forEach(item -> {
                 if (StringUtils.isNotBlank(item.getCreatedBy())) {
-                    UserDO byId = userService.getById(item.getCreatedBy());
+                    SUserDO byId = userService.getById(item.getCreatedBy());
                     if (null != byId) {
                         item.setCreatedByName(byId.getNickname());
                     }
@@ -101,7 +96,7 @@ public class SRoleController extends AbstractCRUDHandler<Long, SRoleDTO, SRoleSe
     @GetMapping("/retrieve/{id}")
     public GenericResponse<SRoleDTO> retrieve(@PathVariable String id) throws Exception {
         return ControllerTemplate.call(response -> {
-            SRoleDO byId = sRoleService.getById(id);
+            SRoleDO byId = getService().getById(id);
             if (null == byId) {
                 throw new BizException("不存在");
             } else {
@@ -115,11 +110,11 @@ public class SRoleController extends AbstractCRUDHandler<Long, SRoleDTO, SRoleSe
     @DeleteMapping(value = "/{id}")
     public GenericResponse<Void> delete(@PathVariable String id) throws Exception {
         return ControllerTemplate.call(response -> {
-            SRoleDO byId = sRoleService.getById(id);
+            SRoleDO byId = getService().getById(id);
             if (null == byId) {
                 throw new BizException("不存在");
             } else {
-                response.setResult(sRoleService.removeById(id));
+                response.setResult(getService().removeById(id));
             }
         });
     }
