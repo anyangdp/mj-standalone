@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mj.common.exception.exception.BizException;
+import com.mj.framework.annotation.PermissionActionResource;
 import com.mj.framework.handler.AbstractCRUDHandler;
 import com.mj.framework.handler.ControllerTemplate;
 import com.mj.framework.handler.GenericResponse;
@@ -13,7 +14,10 @@ import com.mj.web.system.domain.dobj.SDeptDO;
 import com.mj.web.system.domain.dobj.SRoleDO;
 import com.mj.web.system.domain.dobj.SUserDO;
 import com.mj.web.system.domain.dto.SDeptDTO;
+import com.mj.web.system.domain.dto.SPermissionDTO;
 import com.mj.web.system.domain.dto.SRoleDTO;
+import com.mj.web.system.domain.dto.response.SDeptRspDTO;
+import com.mj.web.system.domain.dto.response.SMenuPermissionRspDTO;
 import com.mj.web.system.service.SDeptService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -21,9 +25,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
-@RequestMapping("/sDept")
+@RequestMapping("/s/dept")
 public class SDeptController extends AbstractCRUDHandler<Long, SDeptDTO, SDeptService> {
     @Override
     @ApiOperation(value = "创建", notes = "创建")
@@ -42,18 +47,13 @@ public class SDeptController extends AbstractCRUDHandler<Long, SDeptDTO, SDeptSe
         });
     }
 
-    @ApiOperation(value = "分页查询", notes = "分页查询")
-    @PostMapping(value = "/page/{page}/{pageSize}")
-    public GenericResponse<IPage<SDeptDTO>> page(@PathVariable Integer page, @PathVariable Integer pageSize,
-                                                 @RequestBody @Valid SDeptDTO request, BindingResult bindingResult) throws Exception {
+    @ApiOperation(value = "查询", notes = "部门树查询")
+    @PermissionActionResource(id ="dept-tree", name = "部门树查询", des = "部门树查询")
+    @PostMapping(value = "/list")
+    public GenericResponse<List<SDeptRspDTO>> list(@RequestBody @Valid SDeptDTO request, BindingResult bindingResult) throws Exception {
         return ControllerTemplate.call(bindingResult, response -> {
-            LambdaQueryWrapper<SDeptDO> sRoleDOLambdaQueryWrapper = new LambdaQueryWrapper<>();
-            if (StringUtils.isNotBlank(request.getName())) {
-                sRoleDOLambdaQueryWrapper.like(SDeptDO::getName, request.getName());
-            }
-            sRoleDOLambdaQueryWrapper.orderByDesc(SDeptDO::getCreatedAt);
-            IPage<SDeptDTO> rolePage = PageUtil.convertMybatisPlus(getService().page(new Page<>(page, pageSize), sRoleDOLambdaQueryWrapper), SDeptDTO.class);
-            response.setResult(true).setData(rolePage);
+            response.setData(getService().findTree(request));
+            response.setResult(true);
         });
     }
 
@@ -82,6 +82,16 @@ public class SDeptController extends AbstractCRUDHandler<Long, SDeptDTO, SDeptSe
             } else {
                 response.setResult(getService().removeById(id));
             }
+        });
+    }
+
+    @ApiOperation(value = "批量删除", notes = "菜单批量删除")
+    @PermissionActionResource(id ="dept-batch-delete", name = "删除", des = "菜单删除")
+    @DeleteMapping("/batch")
+    public GenericResponse<Void> delete(@RequestBody List<String> ids) throws Exception {
+        return ControllerTemplate.call(response -> {
+            boolean b = getService().removeBatchByIds(ids);
+            response.setResult(b);
         });
     }
 

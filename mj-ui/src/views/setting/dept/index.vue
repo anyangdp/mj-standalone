@@ -1,153 +1,165 @@
 <template>
 	<el-container>
-		<el-header>
-			<div class="left-panel">
-				<el-button type="primary" icon="el-icon-plus" @click="add"></el-button>
-				<el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del"></el-button>
-			</div>
-			<div class="right-panel">
-				<div class="right-panel-search">
-					<el-input v-model="search.keyword" placeholder="部门名称" clearable></el-input>
-					<el-button type="primary" icon="el-icon-search" @click="upsearch"></el-button>
-				</div>
-			</div>
-		</el-header>
-		<el-main class="nopadding">
-			<scTable ref="table" :apiObj="apiObj" row-key="id" @selection-change="selectionChange" hidePagination>
-				<el-table-column type="selection" width="50"></el-table-column>
-				<el-table-column label="部门名称" prop="label" width="250"></el-table-column>
-				<el-table-column label="排序" prop="sort" width="150"></el-table-column>
-				<el-table-column label="状态" prop="status" width="150">
-					<template #default="scope">
-						<el-tag v-if="scope.row.status==1" type="success">启用</el-tag>
-						<el-tag v-if="scope.row.status==0" type="danger">停用</el-tag>
-					</template>
-				</el-table-column>
-				<el-table-column label="创建时间" prop="date" width="180"></el-table-column>
-				<el-table-column label="备注" prop="remark" min-width="300"></el-table-column>
-				<el-table-column label="操作" fixed="right" align="right" width="170">
-					<template #default="scope">
-						<el-button-group>
-							<el-button text type="primary" size="small" @click="table_show(scope.row, scope.$index)">查看</el-button>
-							<el-button text type="primary" size="small" @click="table_edit(scope.row, scope.$index)">编辑</el-button>
-							<el-popconfirm title="确定删除吗？" @confirm="table_del(scope.row, scope.$index)">
-								<template #reference>
-									<el-button text type="primary" size="small">删除</el-button>
-								</template>
-							</el-popconfirm>
-						</el-button-group>
-					</template>
-				</el-table-column>
+		<el-aside width="300px" v-loading="loading">
+			<el-container>
+				<el-header>
+					<el-input placeholder="输入关键字进行过滤" v-model="name" clearable></el-input>
+				</el-header>
+				<el-main class="nopadding">
+					<el-tree ref="dept" class="menu" node-key="id" :data="deptList" :props="deptProps" draggable="false" highlight-current :expand-on-click-node="false" check-strictly show-checkbox :filter-node-method="filterNode" @node-click="deptClick">
 
-			</scTable>
-		</el-main>
+						<template #default="{node, data}">
+							<span class="custom-tree-node el-tree-node__label">
+								<span class="label">
+									{{ node.label }}
+								</span>
+								<span class="do">
+									<el-icon @click.stop="add(node, data)"><el-icon-plus /></el-icon>
+								</span>
+							</span>
+						</template>
+
+					</el-tree>
+				</el-main>
+				<el-footer style="height:51px;">
+					<el-button type="primary" size="small" icon="el-icon-plus" @click="add()"></el-button>
+					<el-button type="danger" size="small" plain icon="el-icon-delete" @click="delDept"></el-button>
+				</el-footer>
+			</el-container>
+		</el-aside>
+		<el-container>
+			<el-main class="nopadding" style="padding:20px;" ref="main">
+				<save ref="save" :dept="deptList"></save>
+			</el-main>
+		</el-container>
 	</el-container>
-
-	<save-dialog v-if="dialog.save" ref="saveDialog" @success="handleSaveSuccess" @closed="dialog.save=false"></save-dialog>
-
 </template>
 
 <script>
-	import saveDialog from './save'
+	let newMenuIndex = 1;
+	import save from './save'
 
 	export default {
-		name: 'dept',
+		name: "settingMenu",
 		components: {
-			saveDialog
+			save
 		},
-		data() {
+		data(){
 			return {
-				dialog: {
-					save: false
+				loading: false,
+				deptList: [],
+				deptProps: {
+					label: (data)=>{
+						return data.name
+					}
 				},
-				apiObj: this.$API.system.dept.list,
-				selection: [],
-				search: {
-					keyword: null
-				}
+				name: ""
 			}
 		},
+		watch: {
+			name(val){
+				this.$refs.dept.filter(val);
+			}
+		},
+		mounted() {
+			this.getDept();
+		},
 		methods: {
-			//添加
-			add(){
-				this.dialog.save = true
-				this.$nextTick(() => {
-					this.$refs.saveDialog.open()
-				})
+			//加载树数据
+			async getDept(){
+				this.loading = true
+				var res = await this.$API.system.dept.list.post();
+				this.loading = false
+				this.deptList = res;
 			},
-			//编辑
-			table_edit(row){
-				this.dialog.save = true
-				this.$nextTick(() => {
-					this.$refs.saveDialog.open('edit').setData(row)
-				})
+			//树点击
+			deptClick(data, node){
+				const pid = node.parentId ? undefined : node.parent.data.id;
+				this.$refs.save.setData(data, pid, 'edit')
+				this.$refs.main.$el.scrollTop = 0
 			},
-			//查看
-			table_show(row){
-				this.dialog.save = true
-				this.$nextTick(() => {
-					this.$refs.saveDialog.open('show').setData(row)
-				})
+			//树过滤
+			filterNode(value, data){
+				if (!value) return true;
+				var targetText = data.name;
+				return targetText.indexOf(value) !== -1;
 			},
-			//删除
-			async table_del(row){
-				var reqData = {id: row.id}
-				var res = await this.$API.demo.post.post(reqData);
-				if(res.code == 200){
-					this.$refs.table.refresh()
-					this.$message.success("删除成功")
-				}else{
-					this.$alert(res.message, "提示", {type: 'error'})
+			//树拖拽
+			// async nodeDrop(draggingNode, dropNode, dropType) {
+			// 	console.log("draggingNode: ", draggingNode)
+			// 	console.log("dropNode: ", dropNode)
+			// 	console.log("dropType: ", dropType)
+			// 	let form = {
+			// 		draggingNode: draggingNode.data,
+			// 		dropNode: dropNode.data,
+			// 		dropType: dropType
+			// 	}
+			// 	await this.$API.system.menu.permissionSort.put(form)
+			// 	this.$refs.save.setData({})
+			// 	this.$message(`拖拽对象：${draggingNode.data.title}, 释放对象：${dropNode.data.title}, 释放对象的位置：${dropType}`)
+			// },
+			//增加
+			async add(node, data){
+				console.log("node:", node)
+				console.log("data", data)
+				var newMenuName = "未命名" + newMenuIndex++;
+				var newData = {
+					id: newMenuName,
+					name: newMenuName,
+					parentId: data? data.id : '',
+					sort: data? data.sort - 1: 1
 				}
-			},
-			//批量删除
-			async batch_del(){
-				this.$confirm(`确定删除选中的 ${this.selection.length} 项吗？如果删除项中含有子集将会被一并删除`, '提示', {
-					type: 'warning'
-				}).then(() => {
-					const loading = this.$loading();
-					this.$refs.table.refresh()
-					loading.close();
-					this.$message.success("操作成功")
-				}).catch(() => {
+				this.loading = true
+				this.loading = false
 
-				})
+				this.$refs.menu.append(newData, node)
+				this.$refs.menu.setCurrentKey(newData.id)
+				var pid = node ? node.data.id : ""
+				this.$refs.save.setData(newData, pid, 'add')
 			},
-			//表格选择后回调事件
-			selectionChange(selection){
-				this.selection = selection;
-			},
-			//搜索
-			upsearch(){
+			//删除菜单
+			async delDept(){
+				console.log("delmenu")
+				var CheckedNodes = this.$refs.menu.getCheckedNodes()
+				if(CheckedNodes.length == 0){
+					this.$message.warning("请选择需要删除的项")
+					return false;
+				}
 
-			},
-			//根据ID获取树结构
-			filterTree(id){
-				var target = null;
-				function filter(tree){
-					tree.forEach(item => {
-						if(item.id == id){
-							target = item
-						}
-						if(item.children){
-							filter(item.children)
-						}
-					})
+				var confirm = await this.$confirm('确认删除已选择的部门吗？','提示', {
+					type: 'warning',
+					confirmButtonText: '删除',
+					confirmButtonClass: 'el-button--danger'
+				}).catch(() => {})
+				if(confirm != 'confirm'){
+					return false
 				}
-				filter(this.$refs.table.tableData)
-				return target
-			},
-			//本地更新数据
-			handleSaveSuccess(data, mode){
-				if(mode=='add'){
-					this.$refs.table.refresh()
-				}else if(mode=='edit'){
-					this.$refs.table.refresh()
+
+				this.loading = true
+				var reqData = {
+					ids: CheckedNodes.map(item => item.id)
 				}
+				await this.$API.system.dept.batchDel.delete(reqData.ids)
+				this.loading = false
+				CheckedNodes.forEach(item => {
+					var node = this.$refs.menu.getNode(item)
+					if(node.isCurrent){
+						this.$refs.save.setData({})
+					}
+					this.$refs.dept.remove(item)
+				})
 			}
 		}
 	}
 </script>
 
-<style>
+<style scoped>
+	.custom-tree-node {display: flex;flex: 1;align-items: center;justify-content: space-between;font-size: 14px;padding-right: 24px;height:100%;}
+	.custom-tree-node .label {display: flex;align-items: center;;height: 100%;}
+	.custom-tree-node .label .el-tag {margin-left: 5px;}
+	.custom-tree-node .do {display: none;}
+	.custom-tree-node .do i {margin-left:5px;color: #999;}
+	.custom-tree-node .do i:hover {color: #333;}
+
+	.custom-tree-node:hover .do {display: inline-block;}
 </style>

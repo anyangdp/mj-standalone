@@ -2,9 +2,12 @@ package com.mj.security;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mj.security.exception.UserPasswordErrorException;
+import com.mj.web.system.domain.dobj.SDeptDO;
 import com.mj.web.system.domain.dobj.STenantResourceDO;
+//import com.mj.web.system.domain.dobj.SUserDO;
 import com.mj.web.system.domain.dobj.SUserDO;
 import com.mj.web.system.domain.dobj.SUserMenuPermissionDO;
+import com.mj.web.system.service.SDeptService;
 import com.mj.web.system.service.STenantResourceService;
 import com.mj.web.system.service.UserMenuPermissionService;
 import com.mj.web.system.service.UserService;
@@ -28,6 +31,9 @@ import java.util.*;
 public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SDeptService sDeptService;
     @Autowired
     private UserMenuPermissionService userMenuPermissionService;
 
@@ -38,6 +44,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SUserDO SUserDO = userService.getOne(new LambdaQueryWrapper<SUserDO>().eq(SUserDO::getUsername, username)
                 .eq(SUserDO::getActive, true).eq(SUserDO::isDeleted, false));
+        LambdaQueryWrapper<SDeptDO> objectLambdaQueryWrapper = new LambdaQueryWrapper<>();
         if (null == SUserDO) {
             log.info("用户名或密码错误");
             throw new UserPasswordErrorException("用户名或密码错误");

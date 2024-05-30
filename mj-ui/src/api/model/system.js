@@ -3,13 +3,6 @@ import http from "@/utils/request"
 
 export default {
 	menu: {
-		myMenus: {
-			url: `${config.API_URL}/system/menu/my/1.6.1`,
-			name: "获取我的菜单",
-			get: async function(){
-				return await http.get(this.url);
-			}
-		},
 		list: {
 			url: `${config.API_URL}/s/permission/list`,
 			name: "获取菜单",
@@ -85,6 +78,7 @@ export default {
 			}
 		}
 	},
+
 	role: {
 		list: {
 			url: `${config.API_URL}/sRole`,
@@ -195,12 +189,56 @@ export default {
 	},
 	dept: {
 		list: {
-			url: `${config.API_URL}/system/dept/list`,
+			url: `${config.API_URL}/s/dept/list`,
 			name: "获取部门列表",
-			get: async function(params){
-				return await http.get(this.url, params);
+			post: async function(params){
+				return await http.post(this.url, params);
 			}
-		}
+		},
+		create: {
+			url: `${config.API_URL}/s/dept/create`,
+			name: "创建",
+			post: async function(data){
+				return await http.post(this.url, data, {
+					headers: {
+						//'response-status': 401
+					}
+				});
+			}
+		},
+		delete: {
+			url: `${config.API_URL}/s/dept`,
+			name: "删除",
+			delete: async function(id){
+				return await http.delete(this.url+ `/${id}`, {
+					headers: {
+						//'response-status': 401
+					}
+				});
+			}
+		},
+		batchDel: {
+			url: `${config.API_URL}/s/dept`,
+			name: "批量删除",
+			delete: async function(ids){
+				return await http.delete(this.url+ `/batch`, ids, {
+					headers: {
+						//'response-status': 401
+					}
+				});
+			}
+		},
+		update: {
+			url: `${config.API_URL}/s/dept/update`,
+			name: "更新",
+			put: async function(data){
+				return await http.put(this.url, data, {
+					headers: {
+						//'response-status': 401
+					}
+				});
+			}
+		},
 	},
 	user: {
 		list: {

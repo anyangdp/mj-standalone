@@ -1,116 +1,118 @@
 <template>
-	<el-dialog :title="titleMap[mode]" v-model="visible" :width="500" destroy-on-close @closed="$emit('closed')">
-		<el-form :model="form" :rules="rules" :disabled="mode=='show'" ref="dialogForm" label-width="100px">
-			<el-form-item label="上级部门" prop="parentId">
-				<el-cascader v-model="form.parentId" :options="groups" :props="groupsProps" :show-all-levels="false" clearable style="width: 100%;"></el-cascader>
-			</el-form-item>
-			<el-form-item label="部门名称" prop="label">
-				<el-input v-model="form.label" placeholder="请输入部门名称" clearable></el-input>
-			</el-form-item>
-			<el-form-item label="排序" prop="sort">
-				<el-input-number v-model="form.sort" controls-position="right" :min="1" style="width: 100%;"></el-input-number>
-			</el-form-item>
-			<el-form-item label="是否有效" prop="status">
-				<el-switch v-model="form.status" :active-value="1" :inactive-value="0"></el-switch>
-			</el-form-item>
-			<el-form-item label="备注" prop="remark">
-				<el-input v-model="form.remark" clearable type="textarea"></el-input>
-			</el-form-item>
-		</el-form>
-		<template #footer>
-			<el-button @click="visible=false" >取 消</el-button>
-			<el-button v-if="mode!='show'" type="primary" :loading="isSaveing" @click="submit()">保 存</el-button>
+	<el-row :gutter="40">
+		<el-col v-if="!form.id && mode == 'init'">
+			<el-empty description="请选择左侧菜单后操作" :image-size="100"></el-empty>
+		</el-col>
+		<template v-else>
+			<el-col :lg="12">
+				<h2>{{form.title || "新增部门"}}</h2>
+				<el-form :model="form" :rules="rules" ref="dialogForm" label-width="80px" label-position="left">
+					<el-form-item label="唯一标识" prop="id">
+						<el-input :disabled="mode == 'edit'" v-model="form.id" placeholder="唯一标识：英文描述"></el-input>
+						<div class="el-form-item-msg">系统内唯一，且不允许修改</div>
+					</el-form-item>
+					<el-form-item label="显示名称" prop="title">
+						<el-input v-model="form.title" clearable placeholder="菜单显示名字"></el-input>
+					</el-form-item>
+					<el-form-item label="上级部门" prop="parentId">
+						<el-cascader v-model="form.parentId" :options="deptOptions" :props="deptProps" :show-all-levels="false" placeholder="顶级菜单" clearable disabled></el-cascader>
+					</el-form-item>
+					<el-form-item>
+						<el-button type="primary" @click="save" :loading="loading">保 存</el-button>
+					</el-form-item>
+				</el-form>
+			</el-col>
 		</template>
-	</el-dialog>
+	</el-row>
+
 </template>
 
 <script>
+	import scIconSelect from '@/components/scIconSelect'
+
 	export default {
-		emits: ['success', 'closed'],
-		data() {
+		components: {
+			scIconSelect
+		},
+		props: {
+			menu: { type: Object, default: () => {} },
+		},
+		data(){
 			return {
-				mode: "add",
-				titleMap: {
-					add: '新增',
-					edit: '编辑',
-					show: '查看'
-				},
-				visible: false,
-				isSaveing: false,
-				//表单数据
+				mode: "init",
 				form: {
-					id:"",
+					id: "",
 					parentId: "",
-					label: "",
-					sort: 1,
-					status: "1",
-					remark: ""
+					name: "",
+					active: "",
 				},
-				//验证规则
-				rules: {
-					sort: [
-						{required: true, message: '请输入排序', trigger: 'change'}
-					],
-					label: [
-						{required: true, message: '请输入部门名称'}
-					]
-				},
-				//所需数据选项
-				groups: [],
-				groupsProps: {
-					value: "id",
-					emitPath: false,
+				deptOptions: [],
+				deptProps: {
+					value: 'id',
+					label: 'name',
 					checkStrictly: true
-				}
+				},
+				rules: [],
+				apiListAddTemplate: {
+					code: "",
+					url: ""
+				},
+				loading: false
+			}
+		},
+		watch: {
+			dept: {
+				handler(){
+					this.deptOptions = this.treeToMap(this.dept)
+				},
+				deep: true
 			}
 		},
 		mounted() {
-			this.getGroup()
+
 		},
 		methods: {
-			//显示
-			open(mode='add'){
-				this.mode = mode;
-				this.visible = true;
-				return this
-			},
-			//加载树数据
-			async getGroup(){
-				var res = await this.$API.system.dept.list.get();
-				this.groups = res.data;
-			},
-			//表单提交方法
-			submit(){
-				this.$refs.dialogForm.validate(async (valid) => {
-					if (valid) {
-						this.isSaveing = true;
-						var res = await this.$API.demo.post.post(this.form);
-						this.isSaveing = false;
-						if(res.code == 200){
-							this.$emit('success', this.form, this.mode)
-							this.visible = false;
-							this.$message.success("操作成功")
-						}else{
-							this.$alert(res.message, "提示", {type: 'error'})
-						}
+			//简单化菜单
+			treeToMap(tree){
+				const map = []
+				tree.forEach(item => {
+					var obj = {
+						id: item.id,
+						parentId: item.parentId,
+						name: item.name,
+						children: item.children&&item.children.length>0 ? this.treeToMap(item.children) : null
 					}
+					map.push(obj)
 				})
+				return map
+			},
+			//保存
+			save(){
+				this.loading = true
+				if (this.mode == 'add') {
+					this.$API.system.dept.create.post(this.form)
+					this.$message.success("创建成功")
+					this.mode = 'edit'
+				} else {
+					this.$API.system.dept.update.put(this.form)
+					this.$message.success("修改成功")
+				}
+				this.loading = false
 			},
 			//表单注入数据
-			setData(data){
-				this.form.id = data.id
-				this.form.label = data.label
-				this.form.status = data.status
-				this.form.sort = data.sort
-				this.form.parentId = data.parentId
-				this.form.remark = data.remark
-
-				//可以和上面一样单个注入，也可以像下面一样直接合并进去
-				//Object.assign(this.form, data)
+			setData(data, pid, mode){
+				this.form = data
+				this.form.parentId = pid
+				this.mode = mode
 			}
 		}
 	}
 </script>
 
-<style>
+<style scoped>
+	h2 {font-size: 17px;color: #3c4a54;padding:0 0 30px 0;}
+	.apilist {border-left: 1px solid #eee;}
+
+	[data-theme="dark"] h2 {color: #fff;}
+	[data-theme="dark"] .apilist {border-color: #434343;}
 </style>
