@@ -15,10 +15,8 @@ import lombok.experimental.Accessors;
 public class SUserPositionDO {
 
     // 用户id
-    @TableId(type = IdType.INPUT)
     private String userId;
     // 用户id
-    @TableId(type = IdType.INPUT)
     private String positionId;
 
 }

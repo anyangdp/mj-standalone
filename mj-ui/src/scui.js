@@ -81,5 +81,13 @@ export default {
 
 		//全局代码错误捕捉
 		app.config.errorHandler = errorHandler
+		// window.addEventListener('unhandledrejection', event => {
+		// 	console.warn(`WARNING: Unhandled promise rejection. Reason: ${event.reason}`);
+		// 	// 可以在这里通知用户出现了错误
+		// 	alert('出现了一些问题，请联系客服或稍后再试。');
+		//
+		// 	// 防止默认处理（比如将错误打印到控制台）
+		// 	event.preventDefault();
+		// });
 	}
 }

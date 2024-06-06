@@ -15,10 +15,8 @@ import lombok.experimental.Accessors;
 public class SUserDeptDO {
 
     // 用户id
-    @TableId(type = IdType.INPUT)
     private String userId;
     // 部门id
-    @TableId(type = IdType.INPUT)
     private String deptId;
 
 }

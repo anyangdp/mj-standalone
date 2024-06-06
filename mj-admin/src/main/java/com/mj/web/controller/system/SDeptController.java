@@ -5,8 +5,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mj.common.exception.exception.BizException;
 import com.mj.framework.annotation.PermissionActionResource;
+import com.mj.framework.constants.ErrorCodeEnum;
 import com.mj.framework.handler.AbstractCRUDHandler;
 import com.mj.framework.handler.ControllerTemplate;
+import com.mj.framework.handler.ErrorDTO;
 import com.mj.framework.handler.GenericResponse;
 import com.mj.framework.util.PageUtil;
 import com.mj.framework.util.ValueUtil;
@@ -43,6 +45,9 @@ public class SDeptController extends AbstractCRUDHandler<Long, SDeptDTO, SDeptSe
     public GenericResponse<Void> update(@RequestBody @Valid SDeptDTO request, BindingResult bindingResult) throws Exception {
         return ControllerTemplate.call(bindingResult, (GenericResponse<Void> response) -> {
             boolean save = getService().updateById(ValueUtil.dump(request, SDeptDO.class));
+            if (!save) {
+                throw new BizException("修改失败");
+            }
             response.setResult(save);
         });
     }

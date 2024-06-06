@@ -12,14 +12,14 @@ axios.defaults.timeout = sysConfig.TIMEOUT
 axios.interceptors.request.use(
 	(config) => {
 		let token = tool.cookie.get("TOKEN");
-		if(token) {
-			config.headers[sysConfig.TOKEN_NAME] = sysConfig.TOKEN_PREFIX + token
+		if (token) {
+			config.headers[sysConfig.TOKEN_NAME] = sysConfig.TOKEN_PREFIX + token;
 		}
-		if(!sysConfig.REQUEST_CACHE && config.method == 'get') {
+		if (!sysConfig.REQUEST_CACHE && config.method === 'get') {
 			config.params = config.params || {};
 			config.params['_'] = new Date().getTime();
 		}
-		Object.assign(config.headers, sysConfig.HEADERS)
+		Object.assign(config.headers, sysConfig.HEADERS);
 		return config;
 	},
 	(error) => {
@@ -32,73 +32,74 @@ axios.interceptors.response.use(
 	(response) => {
 		// eslint-disable-next-line no-useless-catch
 		try {
-			let res = {
-				data: response.data
-			}
+			let res = { data: response.data };
 
-			if(res.data.result === false) {
-				if(response.data.error.code === 1002) {
-					ElNotification.error({
-						title: '401错误',
-						message: res.data.error.message || "401错误"
-					});
-					router.replace({path: '/login'});
-				} else if(response.data.error.code === 1000) {
-					ElNotification.error({
-						title: '401错误',
-						message: res.data.error.message || "401错误"
-					});
-					router.replace({path: '/login'});
-				} else {
+			if (res.data.result === false) {
+				if (!response.data.error) {
 					ElNotification.error({
 						title: '请求错误',
-						message: res.data.error.message || "Status:500，服务器发生错误！"
+						message: "Status:500，服务器发生错误！"
 					});
+				} else {
+					if (response.data.error.code === 1002 || response.data.error.code === 1000) {
+						ElNotification.error({
+							title: '401错误',
+							message: res.data.error.message || "401错误"
+						});
+						router.replace({ path: '/login' });
+					} else {
+						ElNotification.error({
+							title: '请求错误',
+							message: res.data.error.message || "Status:500，服务器发生错误！"
+						});
+					}
 				}
-				// eslint-disable-next-line no-debugger
-				throw res.data
+				throw res.data;
 			} else {
-				return res.data
+				return res.data;
 			}
 		} catch (e) {
-			throw e
+			throw e;
 		}
 	},
 	(error) => {
-		if(error.response) {
-			if(error.response.status == 404) {
-				ElNotification.error({
-					title: '请求错误',
-					message: "Status:404，正在请求不存在的服务器记录！"
-				});
-			} else if(error.response.status == 500) {
-				ElNotification.error({
-					title: '请求错误',
-					message: error.response.data.message || "Status:500，服务器发生错误！"
-				});
-			} else if(error.response.status == 401) {
-				ElMessageBox.confirm('当前用户已被登出或无权限访问当前资源，请尝试重新登录后再操作。', '无权限访问', {
-					type: 'error',
-					closeOnClickModal: false,
-					center: true,
-					confirmButtonText: '重新登录'
-				}).then(() => {
-					router.replace({path: '/login'});
-				}).catch(() => {
-				})
-			} else {
-				ElNotification.error({
-					title: '请求错误',
-					message: error.message || `Status:${error.response.status}，未知错误！`
-				});
+		let message = "请求服务器无响应！";
+
+		if (error.response) {
+			const status = error.response.status;
+			message = error.response.data.message || `Status:${status}，未知错误！`;
+
+			switch (status) {
+				case 400:
+					message = "请求错误，客户端请求语法错误！";
+					break;
+				case 404:
+					message = "Status:404，正在请求不存在的服务器记录！";
+					break;
+				case 500:
+					message = "Status:500，服务器发生错误！";
+					break;
+				case 401:
+					ElMessageBox.confirm('当前用户已被登出或无权限访问当前资源，请尝试重新登录后再操作。', '无权限访问', {
+						type: 'error',
+						closeOnClickModal: false,
+						center: true,
+						confirmButtonText: '重新登录'
+					}).then(() => {
+						router.replace({ path: '/login' });
+					}).catch(() => {});
+					return Promise.reject(error);
+				default:
+					message = `Status:${status}，未知错误！`;
 			}
-		} else {
-			ElNotification.error({
-				title: '请求错误',
-				message: "请求服务器无响应！"
-			});
 		}
-		return Promise.reject(error.response);
+
+		ElNotification.error({
+			title: '请求错误',
+			message: message
+		});
+
+		return Promise.reject(error);
 	}
 );
 
@@ -120,8 +121,8 @@ var http = {
 				resolve(response.data);
 			}).catch((error) => {
 				reject(error);
-			})
-		})
+			});
+		});
 	},
 
 	/** post 请求
@@ -130,7 +131,7 @@ var http = {
 	 * @param  {参数} config
 	 */
 	post: function (url, data = {}, config = {}) {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			axios({
 				method: 'post',
 				url: url,
@@ -139,7 +140,12 @@ var http = {
 			}).then((response) => {
 				resolve(response.data);
 			}).catch((error) => {
-				reject(error);
+				console.log("error: ", error);
+				ElNotification.error({
+					title: '请求错误',
+					message: error.message
+				});
+				// reject(error);
 			})
 		})
 	},

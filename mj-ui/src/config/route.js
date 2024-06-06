@@ -55,6 +55,12 @@ const routes = [
 				component: "setting/user"
 			},
 			{
+				path: "/setting/dept",
+				name: "dept",
+				meta: {"title": "部门管理", icon: "el-icon-user-filled", type: "menu"},
+				component: "setting/dept"
+			},
+			{
 				path: "/setting/tenant",
 				name: "tenant",
 				meta: {"title": "租户管理", icon: "el-icon-user-filled", type: "menu", role: ["ROLE_admin", "tenant-manage"]},

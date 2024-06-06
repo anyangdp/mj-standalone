@@ -7,9 +7,13 @@
 
 import CryptoJS from 'crypto-js';
 import sysConfig from "@/config";
+import SnowflakeId from "snowflake-id";
 
 const tool = {}
-
+var snowflake = new SnowflakeId({
+	mid : 42,
+	offset : (2019-1970)*31536000*1000
+});
 /* localStorage */
 tool.data = {
 	set(key, data, datetime = 0) {
@@ -219,4 +223,11 @@ tool.crypto = {
 	}
 }
 
+// Initialize snowflake
+
+tool.uuid = {
+	snowFlakeId() {
+		return snowflake.generate()
+	}
+}
 export default tool

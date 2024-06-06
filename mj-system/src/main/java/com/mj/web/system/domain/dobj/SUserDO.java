@@ -3,6 +3,8 @@ package com.mj.web.system.domain.dobj;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.mj.framework.handler.AbstractDO;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 /**
@@ -10,7 +12,8 @@ import lombok.experimental.Accessors;
  */
 @TableName("s_user")
 @Accessors(chain = true)
-@Data
+@Setter
+@Getter
 public class SUserDO extends AbstractDO<String> {
 
     // 用户名

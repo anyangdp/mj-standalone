@@ -42,9 +42,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        SUserDO SUserDO = userService.getOne(new LambdaQueryWrapper<SUserDO>().eq(SUserDO::getUsername, username)
-                .eq(SUserDO::getActive, true).eq(SUserDO::isDeleted, false));
-        LambdaQueryWrapper<SDeptDO> objectLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        LambdaQueryWrapper<SUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<SUserDO>().eq(SUserDO::getUsername, username)
+                .eq(SUserDO::getActive, true).eq(SUserDO::isDeleted, false);
+        SUserDO SUserDO = userService.getOne(lambdaQueryWrapper);
         if (null == SUserDO) {
             log.info("用户名或密码错误");
             throw new UserPasswordErrorException("用户名或密码错误");

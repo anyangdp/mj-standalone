@@ -6,7 +6,7 @@
 					<el-input placeholder="输入关键字进行过滤" v-model="name" clearable></el-input>
 				</el-header>
 				<el-main class="nopadding">
-					<el-tree ref="dept" class="menu" node-key="id" :data="deptList" :props="deptProps" draggable="false" highlight-current :expand-on-click-node="false" check-strictly show-checkbox :filter-node-method="filterNode" @node-click="deptClick">
+					<el-tree ref="deptTree" class="menu" node-key="id" :data="deptList" :props="deptProps" draggable="false" highlight-current :expand-on-click-node="false" check-strictly show-checkbox :filter-node-method="filterNode" @node-click="deptClick">
 
 						<template #default="{node, data}">
 							<span class="custom-tree-node el-tree-node__label">
@@ -36,11 +36,12 @@
 </template>
 
 <script>
+	import tool from "@/utils/tool";
+
 	let newMenuIndex = 1;
 	import save from './save'
-
 	export default {
-		name: "settingMenu",
+		name: "dept",
 		components: {
 			save
 		},
@@ -58,7 +59,7 @@
 		},
 		watch: {
 			name(val){
-				this.$refs.dept.filter(val);
+				this.$refs.deptTree.filter(val);
 			}
 		},
 		mounted() {
@@ -69,6 +70,11 @@
 			async getDept(){
 				this.loading = true
 				var res = await this.$API.system.dept.list.post();
+				if (res) {
+					console.log(res)
+				} else {
+					console.error("res: ", res)
+				}
 				this.loading = false
 				this.deptList = res;
 			},
@@ -84,43 +90,30 @@
 				var targetText = data.name;
 				return targetText.indexOf(value) !== -1;
 			},
-			//树拖拽
-			// async nodeDrop(draggingNode, dropNode, dropType) {
-			// 	console.log("draggingNode: ", draggingNode)
-			// 	console.log("dropNode: ", dropNode)
-			// 	console.log("dropType: ", dropType)
-			// 	let form = {
-			// 		draggingNode: draggingNode.data,
-			// 		dropNode: dropNode.data,
-			// 		dropType: dropType
-			// 	}
-			// 	await this.$API.system.menu.permissionSort.put(form)
-			// 	this.$refs.save.setData({})
-			// 	this.$message(`拖拽对象：${draggingNode.data.title}, 释放对象：${dropNode.data.title}, 释放对象的位置：${dropType}`)
-			// },
 			//增加
 			async add(node, data){
 				console.log("node:", node)
 				console.log("data", data)
 				var newMenuName = "未命名" + newMenuIndex++;
 				var newData = {
-					id: newMenuName,
+					id: tool.uuid.snowFlakeId(),
 					name: newMenuName,
 					parentId: data? data.id : '',
 					sort: data? data.sort - 1: 1
 				}
+				console.log("newData:", newData)
 				this.loading = true
 				this.loading = false
 
-				this.$refs.menu.append(newData, node)
-				this.$refs.menu.setCurrentKey(newData.id)
+				this.$refs.deptTree.append(newData, node)
+				this.$refs.deptTree.setCurrentKey(newData.id)
 				var pid = node ? node.data.id : ""
 				this.$refs.save.setData(newData, pid, 'add')
 			},
 			//删除菜单
 			async delDept(){
 				console.log("delmenu")
-				var CheckedNodes = this.$refs.menu.getCheckedNodes()
+				var CheckedNodes = this.$refs.deptTree.getCheckedNodes()
 				if(CheckedNodes.length == 0){
 					this.$message.warning("请选择需要删除的项")
 					return false;
@@ -142,11 +135,11 @@
 				await this.$API.system.dept.batchDel.delete(reqData.ids)
 				this.loading = false
 				CheckedNodes.forEach(item => {
-					var node = this.$refs.menu.getNode(item)
+					var node = this.$refs.deptTree.getNode(item)
 					if(node.isCurrent){
 						this.$refs.save.setData({})
 					}
-					this.$refs.dept.remove(item)
+					this.$refs.deptTree.remove(item)
 				})
 			}
 		}

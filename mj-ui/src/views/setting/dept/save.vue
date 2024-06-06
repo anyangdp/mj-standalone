@@ -5,17 +5,17 @@
 		</el-col>
 		<template v-else>
 			<el-col :lg="12">
-				<h2>{{form.title || "新增部门"}}</h2>
+				<h2>{{mode === 'add' ? "新增部门" : "修改部门"}}</h2>
 				<el-form :model="form" :rules="rules" ref="dialogForm" label-width="80px" label-position="left">
 					<el-form-item label="唯一标识" prop="id">
-						<el-input :disabled="mode == 'edit'" v-model="form.id" placeholder="唯一标识：英文描述"></el-input>
+						<el-input disabled v-model="form.id" placeholder="唯一标识：英文描述"></el-input>
 						<div class="el-form-item-msg">系统内唯一，且不允许修改</div>
 					</el-form-item>
-					<el-form-item label="显示名称" prop="title">
-						<el-input v-model="form.title" clearable placeholder="菜单显示名字"></el-input>
+					<el-form-item label="显示名称" prop="name">
+						<el-input v-model="form.name" clearable placeholder="菜单显示名字"></el-input>
 					</el-form-item>
 					<el-form-item label="上级部门" prop="parentId">
-						<el-cascader v-model="form.parentId" :options="deptOptions" :props="deptProps" :show-all-levels="false" placeholder="顶级菜单" clearable disabled></el-cascader>
+						<el-cascader v-model="form.parentId" :options="deptOptions" :props="deptProps" :show-all-levels="false" placeholder="顶级部门" clearable disabled></el-cascader>
 					</el-form-item>
 					<el-form-item>
 						<el-button type="primary" @click="save" :loading="loading">保 存</el-button>
@@ -35,7 +35,7 @@
 			scIconSelect
 		},
 		props: {
-			menu: { type: Object, default: () => {} },
+			dept: { type: Object, default: () => {} },
 		},
 		data(){
 			return {
@@ -53,16 +53,13 @@
 					checkStrictly: true
 				},
 				rules: [],
-				apiListAddTemplate: {
-					code: "",
-					url: ""
-				},
 				loading: false
 			}
 		},
 		watch: {
 			dept: {
 				handler(){
+					console.log("this.dept", this.dept)
 					this.deptOptions = this.treeToMap(this.dept)
 				},
 				deep: true
@@ -84,6 +81,7 @@
 					}
 					map.push(obj)
 				})
+				console.log("map: ", map)
 				return map
 			},
 			//保存
