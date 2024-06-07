@@ -137,6 +137,12 @@
             <version>${mj.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.mj</groupId>
+            <artifactId>mj-big-data</artifactId>
+            <version>${mj.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>

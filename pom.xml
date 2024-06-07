@@ -43,6 +43,7 @@
         <module>mj-system</module>
         <module>mj-security</module>
         <module>mj-activiti7</module>
+        <module>mj-big-data</module>
     </modules>
     <dependencyManagement>
         <dependencies>

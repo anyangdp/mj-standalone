@@ -70,6 +70,19 @@ public class SwaggerConfiguration {
     }
 
     @Profile("dev")
+    @Bean(value = "bigDataGroup")
+    @Order(value = 1)
+    public Docket bigDataGroupDocket() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(inventoryGroupApiInfo())
+                .groupName("大数据管理")
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.mj.web.big.data.controller"))
+                .paths(PathSelectors.any())
+                .build().securityContexts(Lists.newArrayList(securityContext())).securitySchemes(Lists.<SecurityScheme>newArrayList(apiKey())).globalOperationParameters(getHeader());
+    }
+
+    @Profile("dev")
     @Bean(value = "workflowGroup")
     @Order(value = 1)
     public Docket workflowGroupDocket() {

@@ -136,6 +136,7 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 .antMatchers("/doc.html",
+                  "/swagger-ui.html",
                   "/v2/api-docs/**",
                 "/v3/api-docs/**",
                 "/swagger-resources/**",

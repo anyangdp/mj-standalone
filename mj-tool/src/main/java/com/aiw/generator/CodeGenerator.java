@@ -22,9 +22,9 @@ public class CodeGenerator {
     public static String jdbcUrl = "jdbc:mysql://localhost:13306/mj-admin?characterEncoding=utf8&serverTimezone=UTC";
     public static String jdbcUsername = "root";
     public static String jdbcPassword = "Dev20990000!";
-   public static String jdbcTablePrefix = "s_user_position";//表名前缀
+   public static String jdbcTablePrefix = "bd_";//表名前缀
 
-    public static String childFolder = "mj-system/";
+    public static String childFolder = "mj-big-data/";
 
 
     // 生成的包和类所在的源码根目录，比如src或者是weiXin
@@ -34,7 +34,7 @@ public class CodeGenerator {
     /**
      * 生成的文件存放的包，公共基础包
      */
-    public static String packageBase = "com.mj.web.system";
+    public static String packageBase = "com.mj.web.big.data";
 
     public static ComboPooledDataSource dataSource() throws PropertyVetoException {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();

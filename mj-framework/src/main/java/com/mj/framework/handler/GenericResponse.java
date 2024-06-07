@@ -24,4 +24,7 @@ public class GenericResponse<T> {
     @ApiModelProperty(value = "返回内容")
     private T data;
 
+    public void success() {
+        this.result = true;
+    }
 }
