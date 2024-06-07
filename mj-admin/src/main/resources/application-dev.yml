@@ -59,7 +59,7 @@ mybatis-plus:
       id-type: input
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
-  mapperLocations: classpath:mapper/**/*Mapper.xml
+  mapperLocations: classpath*:/mapper/**/*Mapper.xml
   typeAliasesPackage: com.mj.**.domain.dobj
 logger:
   path: /tmp/logs/${spring.application.name}
