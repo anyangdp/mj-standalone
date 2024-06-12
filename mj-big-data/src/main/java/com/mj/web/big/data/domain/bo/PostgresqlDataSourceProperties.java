@@ -14,13 +14,4 @@ public class PostgresqlDataSourceProperties extends JdbcDataSourceProperties{
     public DatasourceTypeEnum getDatasourceType() {
         return DatasourceTypeEnum.POSTGRESQL;
     }
-    @Override
-    public Connection createConnection() throws SQLException {
-        return DataSourceBuilder.create()
-                .url(getUrl())
-                .username(getUsername())
-                .password(getPassword())
-                .driverClassName(getDriverClassName())
-                .build().getConnection();
-    }
 }

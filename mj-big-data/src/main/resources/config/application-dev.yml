@@ -1,0 +1,9 @@
+sql:
+  list_tables:
+    postgresql: "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';"
+    mysql: "SHOW TABLES;"
+    sqlite: "SELECT name FROM sqlite_master WHERE type='table';"
+    oracle: "SELECT table_name FROM user_tables;"
+    sqlserver: "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE';"
+test:
+  version: 1.0

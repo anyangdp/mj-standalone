@@ -1,10 +1,14 @@
 package com.mj.web.big.data.service;
 
 import com.mj.common.exception.exception.BizException;
+import com.mj.web.big.data.config.SqlQuery;
 import com.mj.web.big.data.domain.bo.DataSourceProperties;
+import com.mj.web.big.data.domain.bo.JdbcConnection;
 import com.mj.web.big.data.domain.dobj.BdDatasourceDO;
+import com.mj.web.big.data.enums.DatasourceTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
@@ -24,14 +28,16 @@ public class DbOperateService {
 
     private final BdDatasourceService bdDatasourceService;
 
-    private static final Map<String, Connection> store = new ConcurrentHashMap<>();
+    private final SqlQuery sqlQuery;
+
+    private static final Map<String, JdbcConnection> store = new ConcurrentHashMap<>();
 
     private Connection getConnection(DataSourceProperties dataSourceProperties) throws SQLException {
         return dataSourceProperties.createConnection();
     }
 
-    public Connection getConnection(String id) throws Exception {
-        Connection connection;
+    public JdbcConnection getConnection(String id) throws Exception {
+        JdbcConnection connection;
         if (store.containsKey(id)) {
             connection = store.get(id);
         } else {
@@ -39,7 +45,7 @@ public class DbOperateService {
             if (null == byId) {
                 throw new BizException("不存在");
             }
-            connection = getConnection(byId.build());
+            connection = new JdbcConnection(DatasourceTypeEnum.lookup(byId.getType()), getConnection(byId.build()));
             store.put(id, connection);
         }
         return connection;
@@ -52,13 +58,14 @@ public class DbOperateService {
 
     public void disconnect(String id) throws SQLException {
         if (store.containsKey(id)) {
-            store.get(id).close();
+            store.get(id).getConnection().close();
         }
     }
 
     public List<String> showTables(String id) throws Exception {
         List<String> result = new ArrayList<>();
-        PreparedStatement showTables = getConnection(id).prepareStatement("show tables");
+        String sql = sqlQuery.getListTables().get(getConnection(id).getDatasourceTypeEnum().name().toLowerCase());
+        PreparedStatement showTables = getConnection(id).getConnection().prepareStatement(sql);
         ResultSet resultSet = showTables.executeQuery();
         while (resultSet.next()) {
             result.add(resultSet.getString(1));
@@ -69,7 +76,7 @@ public class DbOperateService {
     @PreDestroy
     public void destroy() throws SQLException {
         for (String id : store.keySet()) {
-            store.get(id).close();
+            store.get(id).getConnection().close();
         }
     }
 }

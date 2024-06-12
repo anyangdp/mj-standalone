@@ -1,13 +1,7 @@
 package com.mj.web.big.data.enums;
 
-import com.mj.web.big.data.domain.bo.DataSourceProperties;
-import com.mj.web.big.data.domain.bo.MysqlDataSourceProperties;
-import com.mj.web.big.data.domain.bo.PostgresqlDataSourceProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
-
-import java.util.function.Supplier;
 
 @Getter
 @AllArgsConstructor
@@ -16,11 +10,35 @@ public enum DatasourceTypeEnum {
     ORACLE("oracle"),
     SQLSERVER("sqlserver"),
     POSTGRESQL("postgresql"),
-    DB2("db2"),
     HIVE("hive"),
     HBASE("hbase"),
     CASSANDRA("cassandra"),
     REDIS("redis"),
     MONGODB("mongodb");
-    private final String name;
+    private final String des;
+
+    public static DatasourceTypeEnum lookup(String name) {
+        switch (name) {
+            case "MYSQL":
+                return MYSQL;
+            case "ORACLE":
+                return ORACLE;
+            case "SQLSERVER":
+                return SQLSERVER;
+            case "POSTGRESQL":
+                return POSTGRESQL;
+            case "HIVE":
+                return HIVE;
+            case "HBASE":
+                return HBASE;
+            case "CASSANDRA":
+                return CASSANDRA;
+            case "REDIS":
+                return REDIS;
+            case "MONGODB":
+                return MONGODB;
+            default:
+                return null;
+        }
+    }
 }

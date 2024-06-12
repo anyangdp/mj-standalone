@@ -1,2 +1,5 @@
 application:
   version: 1.0.0
+spring:
+  profiles:
+    active: dev

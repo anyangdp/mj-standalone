@@ -3,7 +3,7 @@ admin:
     # 是否开启单设备登陆 仅当token交互方式为redis时生效
     sdl: false
     # token过期时间（分钟）
-    tokenExpireTime: 60
+    tokenExpireTime: 360
     # 用户选择保存登录状态对应token过期时间（天）
     saveLoginTime: 7
     # 限制用户登陆错误次数（次）

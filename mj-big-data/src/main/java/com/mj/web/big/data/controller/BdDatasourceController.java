@@ -10,30 +10,31 @@ import com.mj.framework.handler.ControllerTemplate;
 import com.mj.framework.handler.GenericResponse;
 import com.mj.framework.util.PageUtil;
 import com.mj.framework.util.ValueUtil;
+import com.mj.web.big.data.config.SqlQuery;
 import com.mj.web.big.data.domain.dobj.BdDatasourceDO;
 import com.mj.web.big.data.domain.dto.BdDatasourceDTO;
 import com.mj.web.big.data.service.BdDatasourceService;
 import com.mj.web.big.data.service.DbOperateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 @Api(value = "数据源管理", tags = "数据源管理")
-@AllArgsConstructor
 @RestController
 @RequestMapping("/bdDatasource")
 public class BdDatasourceController extends AbstractCRUDHandler<Long, BdDatasourceDTO, BdDatasourceService> {
 
-    private final DbOperateService dbOperateService;
+    @Autowired
+    private DbOperateService dbOperateService;
 
     @Override
     @ApiOperation(value = "创建", notes = "创建")
@@ -86,7 +87,7 @@ public class BdDatasourceController extends AbstractCRUDHandler<Long, BdDatasour
     @GetMapping("/connect/test/{id}")
     public GenericResponse<Void> test(@PathVariable String id) throws Exception {
         return ControllerTemplate.call(response -> {
-            Connection connection = dbOperateService.getConnection(id);
+            Connection connection = dbOperateService.getConnection(id).getConnection();
             if (null == connection) {
                 throw new BizException("连接测试失败");
             }
@@ -101,8 +102,6 @@ public class BdDatasourceController extends AbstractCRUDHandler<Long, BdDatasour
             response.setData(dbOperateService.showTables(id)).success();
         });
     }
-
-
 
     @Override
     @ApiOperation(value = "删除", notes = "删除")
