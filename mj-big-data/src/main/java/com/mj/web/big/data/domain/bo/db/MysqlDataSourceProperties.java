@@ -1,4 +1,4 @@
-package com.mj.web.big.data.domain.bo;
+package com.mj.web.big.data.domain.bo.db;
 
 import com.mj.web.big.data.enums.DatasourceTypeEnum;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
 
 @Slf4j
 @Accessors(chain = true)

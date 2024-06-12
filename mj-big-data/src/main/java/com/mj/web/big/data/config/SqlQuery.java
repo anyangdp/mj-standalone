@@ -15,4 +15,5 @@ import java.util.Map;
 @ConfigurationProperties(prefix = "sql")
 public class SqlQuery {
     private Map<String, String> listTables;
+    private Map<String, String> listColumns;
 }

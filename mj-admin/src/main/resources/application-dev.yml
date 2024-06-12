@@ -27,6 +27,18 @@ spring:
   web:
     resources:
       static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,file:${web.upload-path}
+  config:
+    import:
+      # optional:classpath 表示如果文件不存在，Spring Boot 将继续启动而不会抛出异常。如果配置文件是必需的，可以省略 optional: 前缀
+      - optional:classpath:application-big-data.yml
+  activiti:
+    database-schema-update: true
+    db-history-used: false
+    history-level: full
+    check-process-definitions: false
+    deployment-mode: never-fail
+    process-definition-location-prefix: classpath:/process/
+    async-executor-activate: false
 web:
 #  upload-path: /Users/say/Documents/github/mj-standalone
   upload-path: E:\github\mj-standalone\upload-file

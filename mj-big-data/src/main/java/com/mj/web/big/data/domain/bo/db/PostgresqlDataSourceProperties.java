@@ -1,10 +1,6 @@
-package com.mj.web.big.data.domain.bo;
+package com.mj.web.big.data.domain.bo.db;
 
 import com.mj.web.big.data.enums.DatasourceTypeEnum;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class PostgresqlDataSourceProperties extends JdbcDataSourceProperties{
     public PostgresqlDataSourceProperties(String url, String driver, String username, String password) {

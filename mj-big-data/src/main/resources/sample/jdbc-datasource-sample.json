@@ -1,0 +1,11 @@
+{
+  "description": "测试数据库",
+  "driver": "org.postgresql.Driver",
+  "host": "localhost",
+  "id": "",
+  "password": "postgres@123456",
+  "port": "5432",
+  "type": "POSTGRESQL",
+  "url": "jdbc:postgresql://localhost:5432/ca_test_db",
+  "username": "postgres"
+}

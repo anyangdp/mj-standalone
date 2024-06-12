@@ -103,6 +103,14 @@ public class BdDatasourceController extends AbstractCRUDHandler<Long, BdDatasour
         });
     }
 
+    @ApiOperation(value = "数据表字段", notes = "数据表字段")
+    @GetMapping("/table/{id}/{tableName}")
+    public GenericResponse<List<String>> tableColumns(@PathVariable String id, @PathVariable String tableName) throws Exception {
+        return ControllerTemplate.call(response -> {
+            response.setData(dbOperateService.showTablesColumns(id, tableName)).success();
+        });
+    }
+
     @Override
     @ApiOperation(value = "删除", notes = "删除")
     @DeleteMapping(value = "/{id}")

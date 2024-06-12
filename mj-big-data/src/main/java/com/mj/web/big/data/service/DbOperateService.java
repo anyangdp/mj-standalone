@@ -2,13 +2,12 @@ package com.mj.web.big.data.service;
 
 import com.mj.common.exception.exception.BizException;
 import com.mj.web.big.data.config.SqlQuery;
-import com.mj.web.big.data.domain.bo.DataSourceProperties;
-import com.mj.web.big.data.domain.bo.JdbcConnection;
+import com.mj.web.big.data.domain.bo.db.DataSourceProperties;
+import com.mj.web.big.data.domain.bo.db.JdbcConnection;
 import com.mj.web.big.data.domain.dobj.BdDatasourceDO;
 import com.mj.web.big.data.enums.DatasourceTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
@@ -67,6 +66,18 @@ public class DbOperateService {
         String sql = sqlQuery.getListTables().get(getConnection(id).getDatasourceTypeEnum().name().toLowerCase());
         PreparedStatement showTables = getConnection(id).getConnection().prepareStatement(sql);
         ResultSet resultSet = showTables.executeQuery();
+        while (resultSet.next()) {
+            result.add(resultSet.getString(1));
+        }
+        return result;
+    }
+
+    public List<String> showTablesColumns(String id, String tableName) throws Exception {
+        List<String> result = new ArrayList<>();
+        String sql = sqlQuery.getListColumns().get(getConnection(id).getDatasourceTypeEnum().name().toLowerCase());
+        PreparedStatement prepareStatement = getConnection(id).getConnection().prepareStatement(sql);
+        prepareStatement.setString(1, tableName);
+        ResultSet resultSet = prepareStatement.executeQuery();
         while (resultSet.next()) {
             result.add(resultSet.getString(1));
         }

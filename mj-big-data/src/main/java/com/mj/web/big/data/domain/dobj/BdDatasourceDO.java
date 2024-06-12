@@ -1,17 +1,13 @@
 package com.mj.web.big.data.domain.dobj;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.mj.framework.handler.AbstractDO;
-import com.mj.framework.util.ValueUtil;
-import com.mj.web.big.data.domain.bo.DataSourceProperties;
-import com.mj.web.big.data.domain.bo.MysqlDataSourceProperties;
-import com.mj.web.big.data.domain.bo.PostgresqlDataSourceProperties;
+import com.mj.web.big.data.domain.bo.db.DataSourceProperties;
+import com.mj.web.big.data.domain.bo.db.MysqlDataSourceProperties;
+import com.mj.web.big.data.domain.bo.db.PostgresqlDataSourceProperties;
 import com.mj.web.big.data.enums.DatasourceTypeEnum;
 import lombok.Data;
 import lombok.experimental.Accessors;
-
-import java.time.LocalDateTime;
 
 /**
  * 数据源

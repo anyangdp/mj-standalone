@@ -1,4 +1,4 @@
-package com.mj.web.big.data.domain.bo;
+package com.mj.web.big.data.domain.bo.db;
 
 import com.mj.web.big.data.enums.DatasourceTypeEnum;
 import lombok.experimental.Accessors;

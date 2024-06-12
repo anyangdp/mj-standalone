@@ -5,5 +5,9 @@ sql:
     sqlite: "SELECT name FROM sqlite_master WHERE type='table';"
     oracle: "SELECT table_name FROM user_tables;"
     sqlserver: "SELECT table_name FROM information_schema.tables WHERE table_type = 'BASE TABLE';"
-test:
-  version: 1.0
+  list_columns:
+    postgresql: "SELECT column_name FROM information_schema.columns WHERE table_name = ?"
+    mysql: "SHOW COLUMNS FROM ?"
+    sqlite: "PRAGMA table_info(?)"
+    oracle: "SELECT column_name FROM all_tab_columns WHERE table_name = ?"
+    sqlserver: "SELECT column_name FROM information_schema.columns WHERE table_name = ?"

@@ -12,19 +12,9 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 public class HttpConfiguration {
-    @Value("${application.version}")
-    private String version;
-
-//    @Value("${sql.list_tables.postgresql}")
-//    private String sql;
-    @Value("${test.version}")
-    private String version2;
 
     @Bean
     public RestTemplate restTemplate() {
-        System.out.println("当前版本" + version);
-
-//        System.out.println("sql:" + sql);
         return new RestTemplate();
     }
 }
