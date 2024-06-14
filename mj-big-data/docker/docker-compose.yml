@@ -73,11 +73,17 @@ services:
   hbase:
     image: bde2020/hbase-standalone:1.0.0-hbase1.2.6
     container_name: hbase
+    environment:
+      - HBASE_CONF_hbase_zookeeper_quorum=zookeeper
+      - HBASE_CONF_hbase_zookeeper_property_clientPort=2181
+      - HBASE_CONF_hbase_rootdir=hdfs://namenode:9000/hbase
+      - HBASE_CONF_zookeeper_session_timeout=60000
     ports:
       - 16010:16010
     networks:
       - hadoop
     depends_on:
+      - zookeeper
       - namenode
       - datanode
   zookeeper:
@@ -115,55 +121,55 @@ services:
       - hadoop
     depends_on:
       - spark-master
-  hive:
-    image: bde2020/hive:2.3.2-postgresql-metastore
-    container_name: hive
-    environment:
-      - HIVE_METASTORE_URI=thrift://hive-metastore:9083
-      - HIVE_METASTORE_PORT=9083
-      - POSTGRES_HOST=hive-metastore-postgresql
-      - POSTGRES_DB=metastore
-      - POSTGRES_USER=hive
-      - POSTGRES_PASSWORD=hive
-    ports:
-      - 10000:10000
-    networks:
-      - hadoop
-    depends_on:
-      - hive-metastore
-      - hive-metastore-postgresql
-      - namenode
-      - datanode
-  hive-metastore:
-    image: bde2020/hive:2.3.2-postgresql-metastore
-    container_name: hive-metastore
-    environment:
-      - SERVICE=hive-metastore
-      - HIVE_METASTORE_URI=thrift://hive-metastore:9083
-      - HIVE_METASTORE_PORT=9083
-      - POSTGRES_HOST=hive-metastore-postgresql
-      - POSTGRES_DB=metastore
-      - POSTGRES_USER=hive
-      - POSTGRES_PASSWORD=hive
-    ports:
-      - 9083:9083
-    networks:
-      - hadoop
-    depends_on:
-      - hive-metastore-postgresql
-      - namenode
-      - datanode
-  hive-metastore-postgresql:
-    image: postgres:10
-    container_name: hive-metastore-postgresql
-    environment:
-      - POSTGRES_DB=metastore
-      - POSTGRES_USER=hive
-      - POSTGRES_PASSWORD=hive
-    ports:
-      - 5432:5432
-    networks:
-      - hadoop
+#  hive-metastore-postgresql:
+#    image: postgres:10
+#    container_name: hive-metastore-postgresql
+#    environment:
+#      - POSTGRES_DB=metastore
+#      - POSTGRES_USER=hive
+#      - POSTGRES_PASSWORD=hive
+#    ports:
+#      - 5432:5432
+#    networks:
+#      - hadoop
+#
+#  hive-metastore:
+#    image: apache/hive:3.1.3
+#    container_name: hive-metastore
+#    environment:
+#      - SERVICE_NAME=metastore
+#      - DB_DRIVER=postgres
+#      - SERVICE_OPTS=-Djavax.jdo.option.ConnectionDriverName=org.postgresql.Driver -Djavax.jdo.option.ConnectionURL=jdbc:postgresql://hive-metastore-postgresql:5432/metastore -Djavax.jdo.option.ConnectionUserName=hive -Djavax.jdo.option.ConnectionPassword=hive
+#    ports:
+#      - 9083:9083
+#    volumes:
+#      - ./hadoop-config:/opt/hive/conf
+#      - ./warehouse:/opt/hive/data/warehouse
+#    networks:
+#      - hadoop
+#    depends_on:
+#      - hive-metastore-postgresql
+#      - namenode
+#      - datanode
+#  hive-server:
+#    image: apache/hive:3.1.3
+#    container_name: hiveserver2
+#    environment:
+#      - SERVICE_NAME=hiveserver2
+#      - IS_RESUME=true
+#      - SERVICE_OPTS=-Dhive.metastore.uris=thrift://hive-metastore:9083
+#    volumes:
+#      - ./hadoop-config:/opt/hive/conf
+#    ports:
+#      - 10000:10000
+#      - 10002:10002
+#    networks:
+#      - hadoop
+#    depends_on:
+#      - hive-metastore
+#      - namenode
+#      - datanode
+
 networks:
   hadoop:
     driver: bridge
