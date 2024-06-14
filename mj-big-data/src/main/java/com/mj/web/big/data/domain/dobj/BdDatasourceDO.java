@@ -5,7 +5,7 @@ import com.mj.framework.handler.AbstractDO;
 import com.mj.web.big.data.domain.bo.db.DataSourceProperties;
 import com.mj.web.big.data.domain.bo.db.MysqlDataSourceProperties;
 import com.mj.web.big.data.domain.bo.db.PostgresqlDataSourceProperties;
-import com.mj.web.big.data.enums.DatasourceTypeEnum;
+import com.mj.web.big.data.enums.DataSourceTypeEnum;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -35,9 +35,9 @@ public class BdDatasourceDO extends AbstractDO<String> {
     private String description;
 
     public DataSourceProperties build() {
-        if (this.type.equalsIgnoreCase(DatasourceTypeEnum.MYSQL.name())) {
+        if (this.type.equalsIgnoreCase(DataSourceTypeEnum.MYSQL.name())) {
             return new MysqlDataSourceProperties(username, password, driver, url);
-        } else if (this.type.equalsIgnoreCase(DatasourceTypeEnum.POSTGRESQL.name())) {
+        } else if (this.type.equalsIgnoreCase(DataSourceTypeEnum.POSTGRESQL.name())) {
             return new PostgresqlDataSourceProperties(username, password, driver, url);
         } else {
             return null;

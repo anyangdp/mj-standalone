@@ -1,6 +1,6 @@
 package com.mj.web.big.data.domain.bo.db;
 
-import com.mj.web.big.data.enums.DatasourceTypeEnum;
+import com.mj.web.big.data.enums.DataSourceTypeEnum;
 import lombok.experimental.Accessors;
 
 import java.sql.Connection;
@@ -9,7 +9,7 @@ import java.sql.SQLException;
 
 @Accessors(chain = true)
 public interface DataSourceProperties {
-    DatasourceTypeEnum getDatasourceType();
+    DataSourceTypeEnum getDatasourceType();
 
     String getUsername();
 

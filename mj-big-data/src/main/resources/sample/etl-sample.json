@@ -1,9 +1,24 @@
+
 [
   {
     "id": "",
-    "type": "",
+    "type": "simple",
     "configuration": {
-
+      "origin": {
+        "resourceId": "998299270039732224",
+        "type": "MYSQL",
+        "name": "Pw_Pump_PumpStationDetectionHistory",
+        "condition": "",
+        "column": "PumpStationDetectionHistoryOID,PumpStationID,DetectionTime,DetectionValue"
+      },
+      "target": {
+        "resourceId": "998299569101996032",
+        "type": "MYSQL",
+        "name": "Pw_Pump_PumpStationDetectionHistory_bak",
+        "condition": "",
+        "column": "",
+        "mode": "override"
+      }
     },
     "description": "单源任务"
   }

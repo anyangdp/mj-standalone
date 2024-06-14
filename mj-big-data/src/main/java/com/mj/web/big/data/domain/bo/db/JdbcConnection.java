@@ -1,6 +1,6 @@
 package com.mj.web.big.data.domain.bo.db;
 
-import com.mj.web.big.data.enums.DatasourceTypeEnum;
+import com.mj.web.big.data.enums.DataSourceTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +15,6 @@ import java.sql.Connection;
 @Getter
 public class JdbcConnection implements Serializable {
     private static final long serialVersionUID = 4371206474706286410L;
-    private DatasourceTypeEnum datasourceTypeEnum;
+    private DataSourceTypeEnum datasourceTypeEnum;
     private Connection connection;
 }

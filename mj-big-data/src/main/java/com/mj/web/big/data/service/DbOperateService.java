@@ -5,7 +5,7 @@ import com.mj.web.big.data.config.SqlQuery;
 import com.mj.web.big.data.domain.bo.db.DataSourceProperties;
 import com.mj.web.big.data.domain.bo.db.JdbcConnection;
 import com.mj.web.big.data.domain.dobj.BdDatasourceDO;
-import com.mj.web.big.data.enums.DatasourceTypeEnum;
+import com.mj.web.big.data.enums.DataSourceTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,7 +44,7 @@ public class DbOperateService {
             if (null == byId) {
                 throw new BizException("不存在");
             }
-            connection = new JdbcConnection(DatasourceTypeEnum.lookup(byId.getType()), getConnection(byId.build()));
+            connection = new JdbcConnection(DataSourceTypeEnum.lookup(byId.getType()), getConnection(byId.build()));
             store.put(id, connection);
         }
         return connection;

@@ -1,6 +1,6 @@
 package com.mj.web.big.data.domain.bo.db;
 
-import com.mj.web.big.data.enums.DatasourceTypeEnum;
+import com.mj.web.big.data.enums.DataSourceTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -21,8 +21,8 @@ public class MysqlDataSourceProperties extends JdbcDataSourceProperties {
 
     public final String SHOW_TABLE = "show tables";
     @Override
-    public DatasourceTypeEnum getDatasourceType() {
-        return DatasourceTypeEnum.MYSQL;
+    public DataSourceTypeEnum getDatasourceType() {
+        return DataSourceTypeEnum.MYSQL;
     }
 
     @Override

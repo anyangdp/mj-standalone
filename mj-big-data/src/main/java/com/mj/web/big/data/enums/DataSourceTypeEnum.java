@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum DatasourceTypeEnum {
+public enum DataSourceTypeEnum {
     MYSQL("mysql"),
     ORACLE("oracle"),
     SQLSERVER("sqlserver"),
@@ -17,7 +17,7 @@ public enum DatasourceTypeEnum {
     MONGODB("mongodb");
     private final String des;
 
-    public static DatasourceTypeEnum lookup(String name) {
+    public static DataSourceTypeEnum lookup(String name) {
         switch (name) {
             case "MYSQL":
                 return MYSQL;
