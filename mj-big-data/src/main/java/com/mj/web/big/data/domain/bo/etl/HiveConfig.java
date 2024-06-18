@@ -6,11 +6,9 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class OtherDbConfig extends Configuration{
+public class HiveConfig extends JdbcConfig{
     @Override
     public String getType() {
-        return DataSourceTypeEnum.REDIS.name();
+        return DataSourceTypeEnum.HIVE.name();
     }
-    private String column;
-    private String mode;
 }

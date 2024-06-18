@@ -11,7 +11,8 @@ import lombok.Setter;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = MysqlConfig.class, name = "MYSQL"),
         @JsonSubTypes.Type(value = PostgresqlConfig.class, name = "POSTGRESQL"),
-        @JsonSubTypes.Type(value = OtherDbConfig.class, name = "REDIS")
+        @JsonSubTypes.Type(value = HiveConfig.class, name = "HIVE"),
+        @JsonSubTypes.Type(value = RedisConfig.class, name = "REDIS")
 })
 public abstract class Configuration implements DataSourceType{
     // 资源id

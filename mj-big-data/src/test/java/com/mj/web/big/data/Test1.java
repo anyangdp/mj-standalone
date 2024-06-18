@@ -26,4 +26,5 @@ public class Test1 {
         System.out.println(config.getOrigin().getClass().getName());
         System.out.println(config.getTarget().getClass().getName());
     }
+
 }
