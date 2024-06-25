@@ -1,0 +1,60 @@
+version: "2"
+services:
+  namenode:
+    image: apache/hadoop:3
+    hostname: namenode
+    command: ["hdfs", "namenode"]
+    ports:
+      - 9870:9870
+      - 8020:8020
+    volumes:
+      - ./log4j.properties:/opt/hadoop/etc/hadoop/log4j.properties
+    env_file:
+      - ./config
+    environment:
+      ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+    networks:
+      - hadoop
+  datanode:
+    image: apache/hadoop:3
+    hostname: datanode
+    command: ["hdfs", "datanode"]
+    ports:
+      - 9864:9864
+      - 9866:9866
+      - 9867:9867
+    volumes:
+      - ./log4j.properties:/opt/hadoop/etc/hadoop/log4j.properties
+    env_file:
+      - ./config
+    networks:
+      - hadoop
+#  datanode2:
+#    image: apache/hadoop:3
+#    hostname: datanode2
+#    command: ["hdfs", "datanode"]
+#    env_file:
+#      - ./config
+  resourcemanager:
+    image: apache/hadoop:3
+    hostname: resourcemanager
+    command: ["yarn", "resourcemanager"]
+    ports:
+      - 8088:8088
+    env_file:
+      - ./config
+    volumes:
+      - ./test.sh:/opt/test.sh
+#      - ./log4j.properties:/opt/hadoop/etc/hadoop/log4j.properties
+    networks:
+      - hadoop
+  nodemanager:
+    image: apache/hadoop:3
+    command: ["yarn", "nodemanager"]
+    env_file:
+      - ./config
+    networks:
+      - hadoop
+networks:
+  hadoop:
+    driver: bridge
