@@ -1,0 +1,55 @@
+version: '3'
+services:
+  namenode:
+    image: sequenceiq/hadoop-docker:3.1.3
+    container_name: hadoop-namenode
+    environment:
+      - CLUSTER_NAME=hadoop-cluster
+      - HDFS_REPLICATION=1
+#    volumes:
+#      - ./hadoop_namenode:/hadoop/dfs/name
+    ports:
+      - "50070:50070"
+      - "9870:9870"
+
+  datanode:
+    image: sequenceiq/hadoop-docker:3.1.3
+    container_name: hadoop-datanode
+    environment:
+      - CORE_CONF_fs_defaultFS=hdfs://hadoop-namenode:9000
+      - HDFS_CONF_dfs_replication=1
+#    volumes:
+#      - ./hadoop_datanode:/hadoop/dfs/data
+    ports:
+      - "50075:50075"
+      - "9864:9864"
+    depends_on:
+      - namenode
+
+  resourcemanager:
+    image: sequenceiq/hadoop-docker:3.1.3
+    container_name: hadoop-resourcemanager
+    environment:
+      - YARN_CONF_yarn_rm_hostname=hadoop-resourcemanager
+    ports:
+      - "8088:8088"
+
+  nodemanager:
+    image: sequenceiq/hadoop-docker:3.1.3
+    container_name: hadoop-nodemanager
+    environment:
+      - YARN_CONF_yarn_nm_hostname=hadoop-nodemanager
+      - CORE_CONF_fs_defaultFS=hdfs://hadoop-namenode:9000
+    ports:
+      - "8042:8042"
+    depends_on:
+      - resourcemanager
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.5.1
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
