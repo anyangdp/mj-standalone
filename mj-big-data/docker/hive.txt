@@ -1,7 +1,0 @@
-docker run -d -p 10000:10000 -p 10002:10002 --env SERVICE_NAME=hiveserver2 --name hive3 apache/hive:3.1.3
-// 百度云管家占用10000端口了
-docker run -d -p 10003:10000 -p 10004:10002 --env SERVICE_NAME=hiveserver2 --name hive4 apache/hive:4.0.0
-
-
-docker run -d -p 9083:9083 --env SERVICE_NAME=metastore --name metastore-standalone apache/hive:4.0.0
-docker run -d -p 10000:10000 -p 10002:10002 --env SERVICE_NAME=hiveserver2 --env SERVICE_OPTS="-Dhive.metastore.uris=thrift://metastore:9083" --mount source=warehouse,target=/opt/hive/data/warehouse --env IS_RESUME="true" --name hiveserver2 apache/hive:4.0.0
